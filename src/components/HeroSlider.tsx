@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { ArrowRight, BookOpen, Sparkles } from "lucide-react";
 import TrialClassModal from "./TrialClassModal";
 
@@ -52,28 +52,80 @@ export default function HeroSlider() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [renderKey, setRenderKey] = useState(0);
 
-  // Automatic 5-second slide timer
-  useEffect(() => {
-    const timer = setInterval(() => {
-      handleNextSlide();
-    }, 5000);
+  const transitionTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    return () => clearInterval(timer);
-  }, [currentIndex]);
-
-  const handleNextSlide = () => {
+  const handleNextSlide = useCallback(() => {
     setIsAnimating(true);
     setCurrentIndex((prevIndex) => prevIndex + 1);
-  };
+  }, []);
 
   // Handle seamless infinite loop jump when reaching the cloned first slide (Index 3 -> Index 0)
-  const handleTransitionEnd = () => {
-    if (currentIndex === trackSlides.length - 1) {
+  const handleTransitionEnd = useCallback(() => {
+    if (currentIndex >= trackSlides.length - 1) {
       setIsAnimating(false);
       setCurrentIndex(0);
     }
-  };
+  }, [currentIndex]);
+
+  // Safety fallback if onTransitionEnd doesn't fire (e.g. background tab)
+  useEffect(() => {
+    if (isAnimating && currentIndex >= trackSlides.length - 1) {
+      transitionTimeoutRef.current = setTimeout(() => {
+        setIsAnimating(false);
+        setCurrentIndex(0);
+      }, 1200);
+    }
+
+    return () => {
+      if (transitionTimeoutRef.current) {
+        clearTimeout(transitionTimeoutRef.current);
+      }
+    };
+  }, [currentIndex, isAnimating]);
+
+  // Automatic 5-second slide timer (only active when tab is visible)
+  useEffect(() => {
+    let timer: NodeJS.Timeout | null = null;
+
+    const startTimer = () => {
+      if (typeof document !== "undefined" && document.visibilityState === "visible") {
+        timer = setInterval(() => {
+          handleNextSlide();
+        }, 5000);
+      }
+    };
+
+    startTimer();
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        if (timer) clearInterval(timer);
+      } else {
+        // Tab became visible again: reset any stuck animation state and resume slider
+        setIsAnimating(false);
+        setCurrentIndex((prev) => (prev >= trackSlides.length - 1 ? 0 : prev));
+        setRenderKey((k) => k + 1);
+        if (timer) clearInterval(timer);
+        startTimer();
+      }
+    };
+
+    const handleFocus = () => {
+      setIsAnimating(false);
+      setRenderKey((k) => k + 1);
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("focus", handleFocus);
+
+    return () => {
+      if (timer) clearInterval(timer);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, [currentIndex, handleNextSlide]);
 
   // Real slide index for text overlay content
   const activeSlideIndex = currentIndex % originalSlides.length;
@@ -81,13 +133,18 @@ export default function HeroSlider() {
   return (
     <>
       <section className="relative w-full min-h-[85vh] sm:min-h-[92vh] lg:h-[92vh] flex items-center justify-center overflow-hidden bg-black select-none">
-        {/* Preload First Images for High Performance */}
-        <link rel="preload" as="image" href={originalSlides[0].src} media="(min-width: 768px)" />
-        <link rel="preload" as="image" href={originalSlides[0].mobileSrc} media="(max-width: 767px)" />
+        {/* Preload All Hero Images for High Performance */}
+        {originalSlides.map((slide, i) => (
+          <React.Fragment key={i}>
+            <link rel="preload" as="image" href={slide.src} media="(min-width: 768px)" />
+            <link rel="preload" as="image" href={slide.mobileSrc} media="(max-width: 767px)" />
+          </React.Fragment>
+        ))}
 
         {/* Full-Width Horizontal Sliding Track */}
         <div className="absolute inset-0 w-full h-full overflow-hidden">
           <div
+            key={renderKey}
             className="flex w-full h-full"
             onTransitionEnd={handleTransitionEnd}
             style={{
@@ -109,7 +166,16 @@ export default function HeroSlider() {
                     src={slide.src}
                     alt={slide.alt}
                     className="w-full h-full object-cover object-center transform scale-[1.02] transition-transform duration-[5000ms] ease-out"
-                    loading={idx === 0 ? "eager" : "lazy"}
+                    loading="eager"
+                    // @ts-ignore
+                    fetchPriority="high"
+                    onError={(e) => {
+                      // Fallback reload if browser dropped GPU texture on tab switch
+                      const target = e.currentTarget;
+                      const currentSrc = target.src;
+                      target.src = "";
+                      target.src = currentSrc;
+                    }}
                   />
                 </picture>
 
