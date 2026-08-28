@@ -28,5 +28,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# ignore heavy pdf binary uploads in git
-*.pdf
+# ignore ultra-heavy files (>50MB) that fail GitHub push
+public/pdf/quran.pdf
+public/pdfs/English word to word/

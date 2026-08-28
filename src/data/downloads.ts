@@ -24,8 +24,8 @@ export const downloadsData: DownloadItem[] = [
     pages: 604,
     format: "PDF",
     image: "/downloads/colorful-tajweed-quran.jpg",
-    downloadUrl: "/pdf/quran.pdf",
-    pdfUrl: "/pdf/quran.pdf",
+    downloadUrl: "/pdfs/quran.pdf",
+    pdfUrl: "/pdfs/quran.pdf",
   },
   {
     id: "english-quran-word-to-word-translation",
@@ -38,7 +38,8 @@ export const downloadsData: DownloadItem[] = [
     pages: 850,
     format: "PDF",
     image: "/downloads/word-to-word-translation.jpg",
-    downloadUrl: "",
+    downloadUrl: "https://archive.org/download/QuranEnglishWordForWordTranslation/Juz%2001.pdf",
+    pdfUrl: "https://archive.org/download/QuranEnglishWordForWordTranslation/Juz%2001.pdf",
   },
   {
     id: "english-quranic-qaidah",
@@ -65,8 +66,8 @@ export const downloadsData: DownloadItem[] = [
     pages: 8,
     format: "PDF",
     image: "/downloads/six-kalimas.jpg",
-    downloadUrl: "/pdfs/Six kalimas of Islam/Six Kalma's.pdf",
-    pdfUrl: "/pdfs/Six kalimas of Islam/Six Kalma's.pdf",
+    downloadUrl: "/pdfs/Six Kalimas of Islam/Six Kalma's.pdf",
+    pdfUrl: "/pdfs/Six Kalimas of Islam/Six Kalma's.pdf",
   },
   {
     id: "namaz",
