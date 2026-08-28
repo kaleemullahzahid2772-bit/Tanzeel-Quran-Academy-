@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import { coursesData } from "@/data/courses";
+import { downloadsData } from "@/data/downloads";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://www.alburhanquranacademy.org";
@@ -8,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "",
     "/about",
     "/courses",
+    "/downloads",
     "/student-gallery",
     "/faq",
     "/contact",
@@ -25,5 +27,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...staticPages, ...coursePages];
+  const downloadPages = downloadsData.map((d) => ({
+    url: `${baseUrl}/downloads/${d.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  }));
+
+  return [...staticPages, ...coursePages, ...downloadPages];
 }

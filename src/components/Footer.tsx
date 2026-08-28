@@ -141,6 +141,11 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
+                  <Link href="/downloads" className="hover:text-[var(--color-accent)] transition-colors">
+                    Free PDF Downloads
+                  </Link>
+                </li>
+                <li>
                   <Link href="/student-gallery" className="hover:text-[var(--color-accent)] transition-colors">
                     Student Gallery
                   </Link>
