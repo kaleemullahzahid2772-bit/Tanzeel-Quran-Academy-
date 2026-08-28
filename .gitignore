@@ -28,4 +28,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-.vercel
+# heavy static binaries
+public/pdf/
+public/pdfs/
