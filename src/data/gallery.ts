@@ -82,7 +82,7 @@ export const galleryImages: GalleryItem[] = [
   {
     id: "gallery-12",
     image: "/gallery/student-12.jpg",
-    caption: "Academy Group Activity",
-    category: "Academy Activities",
+    caption: "Online Tajweed Lesson",
+    category: "Tajweed Class",
   },
 ];
