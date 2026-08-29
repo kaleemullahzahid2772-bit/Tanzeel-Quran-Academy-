@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { User, Calendar, Clock, BookOpen, ArrowRight } from "lucide-react";
+import { User, Clock, BookOpen, ArrowRight } from "lucide-react";
 import { Course } from "@/data/courses";
 import TrialClassModal from "./TrialClassModal";
 
@@ -64,11 +64,6 @@ export default function CourseCard({ course }: CourseCardProps) {
             <span className="flex items-center gap-1.5">
               <User className="w-3.5 h-3.5 text-[var(--color-accent)]" />
               <span>{course.ageGroup}</span>
-            </span>
-
-            <span className="flex items-center gap-1.5">
-              <Calendar className="w-3.5 h-3.5 text-[var(--color-accent)]" />
-              <span>{course.duration}</span>
             </span>
 
             <span className="flex items-center gap-1.5">

@@ -6,7 +6,6 @@ import { notFound } from "next/navigation";
 import { coursesData } from "@/data/courses";
 import {
   User,
-  Calendar,
   Clock,
   CheckCircle2,
   ArrowLeft,
@@ -66,11 +65,6 @@ export default function CourseDetailPage({ params }: CourseDetailPageProps) {
               <span className="flex items-center gap-2 bg-[var(--color-surface)] px-4 py-2 rounded-xl border border-[var(--color-border)]">
                 <User className="w-4 h-4 text-[var(--color-accent)]" />
                 <span>Age Group: {course.ageGroup}</span>
-              </span>
-
-              <span className="flex items-center gap-2 bg-[var(--color-surface)] px-4 py-2 rounded-xl border border-[var(--color-border)]">
-                <Calendar className="w-4 h-4 text-[var(--color-accent)]" />
-                <span>Duration: {course.duration}</span>
               </span>
 
               <span className="flex items-center gap-2 bg-[var(--color-surface)] px-4 py-2 rounded-xl border border-[var(--color-border)]">

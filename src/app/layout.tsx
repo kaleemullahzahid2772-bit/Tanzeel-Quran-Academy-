@@ -29,6 +29,11 @@ export const metadata: Metadata = {
     siteName: "Al Tanzeel Quran Academy",
     type: "website",
   },
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({

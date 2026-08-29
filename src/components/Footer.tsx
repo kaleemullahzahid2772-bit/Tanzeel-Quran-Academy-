@@ -173,28 +173,33 @@ export default function Footer() {
               </div>
               <ul className="flex flex-col gap-2.5 text-xs sm:text-sm">
                 <li>
-                  <Link href="/courses/noorani-qaida" className="hover:text-[var(--color-accent)] transition-colors">
-                    Noorani Qaida for Beginners
+                  <Link href="/courses/quranic-qaidah" className="hover:text-[var(--color-accent)] transition-colors">
+                    Quranic Qaidah for Beginners
                   </Link>
                 </li>
                 <li>
-                  <Link href="/courses/quran-reading-with-tajweed" className="hover:text-[var(--color-accent)] transition-colors">
-                    Quran Recitation with Tajweed
+                  <Link href="/courses/beautiful-quran-recitation-course" className="hover:text-[var(--color-accent)] transition-colors">
+                    Beautiful Quran Recitation Course
                   </Link>
                 </li>
                 <li>
-                  <Link href="/courses/quran-memorization-hifz" className="hover:text-[var(--color-accent)] transition-colors">
+                  <Link href="/courses/tajweed-course" className="hover:text-[var(--color-accent)] transition-colors">
+                    Tajweed Masterclass
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/courses/quran-memorizing" className="hover:text-[var(--color-accent)] transition-colors">
                     Quran Memorization (Hifz)
                   </Link>
                 </li>
                 <li>
-                  <Link href="/courses/islamic-studies-and-duas" className="hover:text-[var(--color-accent)] transition-colors">
-                    Islamic Studies & Essential Duas
+                  <Link href="/courses/translation-holy-quran" className="hover:text-[var(--color-accent)] transition-colors">
+                    Translation of The Holy Quran
                   </Link>
                 </li>
                 <li>
-                  <Link href="/courses/arabic-language" className="hover:text-[var(--color-accent)] transition-colors">
-                    Quranic Arabic Language
+                  <Link href="/courses/women-quranic-course" className="hover:text-[var(--color-accent)] transition-colors">
+                    Women Quranic Course
                   </Link>
                 </li>
               </ul>

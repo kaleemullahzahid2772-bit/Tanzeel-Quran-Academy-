@@ -6,7 +6,7 @@ export interface Course {
   shortDescription: string;
   fullDescription: string;
   ageGroup: string;
-  duration: string;
+  duration?: string;
   classDuration: string;
   image: string;
   badge?: string;
@@ -27,7 +27,6 @@ export const coursesData: Course[] = [
     fullDescription:
       "Our Quranic Qaida course provides a structured foundation for learners of all ages. Beginning with individual Arabic alphabets, sound articulation points (Makharij), and vowel marks (Fatha, Kasra, Damma), students progress towards joining letters, understanding Sukoon, Tanween, and basic rules of Tajweed. Designed specifically for kids and adults starting from scratch, our tutors maintain a patient, gentle pace to ensure accurate pronunciation.",
     ageGroup: "4+ Years",
-    duration: "3 Months",
     classDuration: "30 Minutes / class",
     image: "/courses/quranic-qaida.jpg",
     badge: "Most Popular for Beginners",
@@ -58,7 +57,6 @@ export const coursesData: Course[] = [
     fullDescription:
       "Quran Gateway serves as a comprehensive bridge course for students who have completed basic Qaida or possess elementary reading ability. This course focuses on continuous flow, rhythmic Tajweed application, stopping and starting rules (Waqf), and contextual vocabulary comprehension. Learners receive 1-on-1 personalized feedback to polish rhythm, eliminate hesitation, and build a lasting spiritual relationship with Allah's words.",
     ageGroup: "7+ Years",
-    duration: "6 Months",
     classDuration: "30 Minutes / class",
     image: "/courses/quran-gateway.jpg",
     badge: "Recommended for Intermediate Learners",
@@ -89,7 +87,6 @@ export const coursesData: Course[] = [
     fullDescription:
       "Embarking on the journey of Hifz-ul-Quran is one of the highest honors in Islam. Our structured Hifz program features daily 1-on-1 sessions divided into three core pillars: Sabaq (New Lesson), Sabqi (Recent Revision), and Manzil (Old Revision). Experienced male and female Hafiz teachers tailor daily quotas to student capacity, incorporating proven memory retainment strategies, tajweed accuracy, and character development.",
     ageGroup: "7+ Years",
-    duration: "12 Months / Flexible",
     classDuration: "45 Minutes / class",
     image: "/courses/quran-hifz.jpg",
     badge: "Comprehensive Hifz Program",
@@ -120,7 +117,6 @@ export const coursesData: Course[] = [
     fullDescription:
       "Reciting the Quran brings immense reward, but understanding its message transforms lives. Our Translation & Tafseer course breaks down Arabic root words, sentence structures, historical context (Asbab-al-Nuzul), and practical wisdom for modern challenges. Taught by qualified Islamic scholars, this course enables students to connect deeply with Allah's guidance during prayer and daily decision-making.",
     ageGroup: "10+ Years",
-    duration: "6 Months",
     classDuration: "45 Minutes / class",
     image: "/courses/quran-translation.jpg",
     badge: "Spiritual Enrichment",
@@ -151,7 +147,6 @@ export const coursesData: Course[] = [
     fullDescription:
       "We understand the unique learning preferences and schedules of female students. Our Women Quranic Course pairs sisters with highly qualified, certified female scholars (Qarias & Huffaz). Whether learning basic Tajweed, revising memorization, or studying Islamic jurisprudence related to women's affairs, lessons are conducted with utmost modesty, flexibility, and maternal care.",
     ageGroup: "All Ages (Sisters)",
-    duration: "4 Months",
     classDuration: "30 Minutes / class",
     image: "/courses/women-course.jpg",
     badge: "Dedicated Female Faculty",
@@ -182,7 +177,6 @@ export const coursesData: Course[] = [
     fullDescription:
       "Tajweed is the science of giving every letter of the Quran its rights and dues according to the rules of Arabic phonology. This course covers both theoretical principles (Ahkam) and rigorous oral practice (Talaqqi). Students learn heavy and light letters, elongation rules (Madd), nasalization (Ghunnah), echoing sounds (Qalqalah), and proper vocal pitch management under expert Qaris.",
     ageGroup: "6+ Years",
-    duration: "3 Months",
     classDuration: "30 Minutes / class",
     image: "/courses/tajweed-course.jpg",
     badge: "Certification Available",
@@ -202,5 +196,35 @@ export const coursesData: Course[] = [
       "Receive Tajweed completion certificate upon passing final exam",
     ],
     prerequisites: "Basic Quran reading capability.",
+  },
+  {
+    id: "beautiful-quran-recitation-course",
+    slug: "beautiful-quran-recitation-course",
+    title: "Beautiful Quran Recitation Course",
+    subtitle: "Master Melodious Voice, Rhythmic Fluency & Heart-Touching Qirat",
+    shortDescription:
+      "The Beautiful Quran Recitation Course is designed for students who want to recite the Holy Quran with a melodious tone, proper rhythm, and touching resonance. Learn voice modulation, breath control, and classic recitation styles under expert Qaris.",
+    fullDescription:
+      "Reciting the Holy Quran with a beautiful, heartfelt voice brings peace to the soul and fulfills the Sunnah of beautifying the Quran with our voices. In this specialized course, students learn the art of melodious recitation (Husn-e-Sawt), vocal pitch management, smooth rhythm, breath control, and aesthetic application of Tajweed rules. Guided 1-on-1 by certified Qaris, learners develop confidence to recite with deep reverence and touching resonance.",
+    ageGroup: "All Ages",
+    classDuration: "30 Minutes / class",
+    image: "/courses/quran-recitation.jpg",
+    badge: "Specialized Qirat & Melody",
+    level: "All Levels",
+    topics: [
+      "Fundamentals of Melodious Recitation (Husn-e-Sawt)",
+      "Voice Modulation, Breath Control & Vocal Warm-ups",
+      "Rhythmic Flow & Aesthetic Tajweed Application",
+      "Mastering Stopping and Pausing with Melodic Flow",
+      "Practicing Classical Maqamat & World-Famous Qari Styles",
+      "1-on-1 Personalized Recitation Polishing & Correction",
+    ],
+    learningOutcomes: [
+      "Recite the Holy Quran with a soulful, beautiful, and confident voice",
+      "Master breath control to recite longer verses with ease",
+      "Apply Tajweed with effortless natural melody without straining",
+      "Lead prayers and recitation gatherings with spiritual resonance",
+    ],
+    prerequisites: "Basic Quran reading ability with elementary Tajweed.",
   },
 ];
