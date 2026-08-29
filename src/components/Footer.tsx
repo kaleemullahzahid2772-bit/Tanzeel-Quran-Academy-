@@ -65,7 +65,7 @@ export default function Footer() {
             {/* Column 1: Brand & Logo */}
             <div className="flex flex-col gap-5">
               <Link href="/" className="inline-block">
-                <div className="relative w-52 h-14">
+                <div className="relative w-64 sm:w-72 h-20 sm:h-24">
                   <img
                     src="/tanzeel-logo.png"
                     alt="Tanzeel Quran Academy"
