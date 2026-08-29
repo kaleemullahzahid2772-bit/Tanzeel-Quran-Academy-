@@ -39,9 +39,8 @@ export const galleryImages: GalleryItem[] = [
   },
   {
     id: "gallery-5",
-    image: "/gallery/student-5.jpg",
-    caption: "Academy Learning Activity",
-    category: "Academy Activities",
+    image: "",
+    caption: "",
   },
   {
     id: "gallery-6",
