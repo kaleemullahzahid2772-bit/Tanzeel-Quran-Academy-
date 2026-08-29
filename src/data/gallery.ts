@@ -76,8 +76,8 @@ export const galleryImages: GalleryItem[] = [
   {
     id: "gallery-11",
     image: "/gallery/student-11.jpg",
-    caption: "Hifz Revision Class",
-    category: "Hifz Class",
+    caption: "Online Quran Mentorship & Class",
+    category: "Quran Class",
   },
   {
     id: "gallery-12",
