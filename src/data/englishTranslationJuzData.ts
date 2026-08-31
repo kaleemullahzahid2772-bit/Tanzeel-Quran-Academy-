@@ -18,7 +18,7 @@ export const englishTranslationJuzData: EnglishTranslationJuzItem[] = Array.from
       number: juzNum,
       title: `Juz ${juzNum}`,
       arabicTitle: `الجزء ${juzNum}`,
-      pdfUrl: `https://archive.org/download/QuranEnglishWordForWordTranslation/Juz%20${paddedNum}.pdf`,
+      pdfUrl: `/pdfs/English word to word/Juz ${paddedNum}.pdf`,
       isAvailable: true,
     };
   }

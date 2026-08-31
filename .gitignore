@@ -30,4 +30,3 @@ next-env.d.ts
 
 # ignore ultra-heavy files (>50MB) that fail GitHub push
 public/pdf/quran.pdf
-public/pdfs/English word to word/

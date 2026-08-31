@@ -38,8 +38,8 @@ export const downloadsData: DownloadItem[] = [
     pages: 850,
     format: "PDF",
     image: "/downloads/word-to-word-translation.jpg",
-    downloadUrl: "https://archive.org/download/QuranEnglishWordForWordTranslation/Juz%2001.pdf",
-    pdfUrl: "https://archive.org/download/QuranEnglishWordForWordTranslation/Juz%2001.pdf",
+    downloadUrl: "/pdfs/English word to word/Juz 01.pdf",
+    pdfUrl: "/pdfs/English word to word/Juz 01.pdf",
   },
   {
     id: "english-quranic-qaidah",
