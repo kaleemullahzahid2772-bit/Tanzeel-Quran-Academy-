@@ -6,14 +6,14 @@ import { teachersData } from "@/data/teachers";
 import { getAboutPageSchema, getBreadcrumbSchema, SITE_URL } from "@/lib/schema";
 
 export const metadata: Metadata = {
-  title: "About Us | Certified Online Quran Teachers | Al Tanzeel",
+  title: "About Our Online Quran Academy & Certified Teachers | Al Tanzeel",
   description:
-    "Learn about Al Tanzeel Quran Academy's mission, leadership, and certified male & female Islamic scholars dedicated to global 1-on-1 online Quran tutoring across USA, UK, Canada & worldwide.",
+    "Learn about Al Tanzeel Quran Academy's mission, leadership, and certified male & female Islamic scholars dedicated to global 1-on-1 online Quran tutoring across USA, UK, Canada, Australia & worldwide.",
   alternates: {
     canonical: `${SITE_URL}/about`,
   },
   openGraph: {
-    title: "About Us | Certified Online Quran Teachers | Al Tanzeel Quran Academy",
+    title: "About Our Online Quran Academy & Certified Teachers | Al Tanzeel",
     description:
       "Discover our mission, certified Huffaz and female Islamic scholars providing 1-on-1 online Quran tutoring across USA, UK, Canada, Australia & worldwide.",
     url: `${SITE_URL}/about`,
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "About Us | Certified Online Quran Teachers | Al Tanzeel",
+    title: "About Our Online Quran Academy & Certified Teachers | Al Tanzeel",
     description:
       "Nurturing a deep connection with the Holy Quran through modern, accessible 1-on-1 online tutoring with certified scholars.",
     images: ["/why-choose-us.jpg"],
@@ -219,10 +219,10 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-14">
             <h2 className="text-3xl sm:text-5xl font-black text-white mb-4">
-              Meet Our Certified <span className="text-[var(--color-sky)]">Faculty</span>
+              Meet Our Certified <span className="text-[var(--color-sky)]">Online Quran Teachers</span>
             </h2>
             <p className="text-gray-400 text-sm max-w-xl mx-auto">
-              Our scholars bring years of teaching experience, passion, and English fluency to support your Quranic growth.
+              Our male and female Islamic scholars bring certified credentials, teaching experience, and English fluency to guide students worldwide.
             </p>
           </div>
 

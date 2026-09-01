@@ -25,6 +25,44 @@ export async function generateStaticParams() {
   }));
 }
 
+const courseSeoMap: Record<string, { title: string; metaDescription: string }> = {
+  "quranic-qaidah": {
+    title: "Noorani Qaida Online for Kids & Beginners | Al Tanzeel",
+    metaDescription:
+      "Learn Noorani Qaida online with certified Quran teachers. Master Arabic alphabet phonetics, Makharij articulation & basic Tajweed. Book your free 3-day trial!",
+  },
+  "quran-gateway": {
+    title: "Quran Gateway Course | Online Quran Reading Classes | Al Tanzeel",
+    metaDescription:
+      "Advance into smooth, fluent Quran reading online. Master rhythmic Tajweed, pausing rules (Waqf) & essential Surahs with 1-on-1 personalized tutoring.",
+  },
+  "quran-memorizing": {
+    title: "Online Quran Memorization (Hifz) Course | Al Tanzeel",
+    metaDescription:
+      "Enroll in our structured Hifz Quran Online program with certified Huffaz. Daily Sabaq, Sabqi, and Manzil revision system for kids & adults.",
+  },
+  "translation-holy-quran": {
+    title: "Translation of The Holy Quran & Tafseer Online | Al Tanzeel",
+    metaDescription:
+      "Understand divine meanings, Quranic Arabic vocabulary & contextual Tafseer with qualified Islamic scholars. Deepen your faith & Salah focus.",
+  },
+  "women-quranic-course": {
+    title: "Online Quran Classes for Women & Sisters | Al Tanzeel",
+    metaDescription:
+      "Private 1-on-1 online Quran classes for women, sisters & girls taught exclusively by certified female scholars (Qarias). Modest & flexible timings.",
+  },
+  "tajweed-course": {
+    title: "Learn Quran with Tajweed Online | Tajweed Masterclass | Al Tanzeel",
+    metaDescription:
+      "Master 17 Makharij, Sifaat, Ahkam of Noon/Meem Sakinah & classical recitation rules with certified Qaris. Official Tajweed certification available.",
+  },
+  "beautiful-quran-recitation-course": {
+    title: "Beautiful Quran Recitation Course | Melodious Qirat | Al Tanzeel",
+    metaDescription:
+      "Learn melodious Quran recitation (Husn-e-Sawt), breath control & voice modulation under expert Qaris. Beautify your recitation with heart-touching resonance.",
+  },
+};
+
 export async function generateMetadata({
   params,
 }: CourseDetailPageProps): Promise<Metadata> {
@@ -37,20 +75,25 @@ export async function generateMetadata({
     };
   }
 
+  const seoData = courseSeoMap[course.slug] || {
+    title: `${course.title} | Online Quran Course | Al Tanzeel`,
+    metaDescription: course.shortDescription,
+  };
+
   const courseUrl = `${SITE_URL}/courses/${course.slug}`;
   const courseImage = course.image.startsWith("http")
     ? course.image
     : `${SITE_URL}${course.image}`;
 
   return {
-    title: `${course.title} | Online Quran Course | Al Tanzeel`,
-    description: course.shortDescription,
+    title: seoData.title,
+    description: seoData.metaDescription,
     alternates: {
       canonical: courseUrl,
     },
     openGraph: {
       title: `${course.title} | Al Tanzeel Quran Academy`,
-      description: course.shortDescription,
+      description: seoData.metaDescription,
       url: courseUrl,
       siteName: "Al Tanzeel Quran Academy",
       images: [
@@ -58,15 +101,15 @@ export async function generateMetadata({
           url: courseImage,
           width: 1200,
           height: 630,
-          alt: `${course.title} - Online Quran Course`,
+          alt: `${course.title} - Online Quran Course at Al Tanzeel Quran Academy`,
         },
       ],
       type: "article",
     },
     twitter: {
       card: "summary_large_image",
-      title: `${course.title} | Al Tanzeel Quran Academy`,
-      description: course.shortDescription,
+      title: seoData.title,
+      description: seoData.metaDescription,
       images: [courseImage],
     },
   };

@@ -21,6 +21,7 @@ export function getOrganizationSchema() {
     "@id": `${SITE_URL}/#organization`,
     name: ACADEMY_NAME,
     legalName: ACADEMY_LEGAL_NAME,
+    slogan: "Authentic Online Quran Education with Certified Male & Female Scholars",
     url: SITE_URL,
     logo: {
       "@type": "ImageObject",
@@ -32,6 +33,11 @@ export function getOrganizationSchema() {
     description: ACADEMY_DESCRIPTION,
     email: ACADEMY_EMAIL,
     telephone: ACADEMY_PHONE,
+    founder: {
+      "@type": "Person",
+      name: "Sheikh Khizar Hayat",
+      jobTitle: "Principal & Head of Islamic Curriculum",
+    },
     sameAs: [
       "https://wa.me/923274816872",
       "https://facebook.com",
@@ -69,14 +75,53 @@ export function getOrganizationSchema() {
       price: "0",
       priceCurrency: "USD",
     },
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "Online Quran Courses & Islamic Education Programs",
+      itemListElement: [
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Course",
+            name: "Quranic Qaidah Course",
+            description: "Noorani Qaida for beginners and kids learning Arabic phonetics and Quran reading.",
+          },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Course",
+            name: "Tajweed Masterclass",
+            description: "Classical Tajweed rules, 17 Makharij articulation points, and recitation precision.",
+          },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Course",
+            name: "Quran Memorization (Hifz)",
+            description: "Structured daily Sabaq, Sabqi, and Manzil memorization system with certified Huffaz.",
+          },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Course",
+            name: "Women Quranic Course",
+            description: "Exclusive private 1-on-1 classes for sisters and girls taught by certified female scholars.",
+          },
+        },
+      ],
+    },
     knowsAbout: [
-      "Quran Recitation",
-      "Tajweed Rules",
+      "Online Quran Academy",
+      "Quran Recitation with Tajweed",
+      "Tajweed Rules & 17 Makharij",
       "Quran Memorization (Hifz)",
-      "Noorani Qaida",
-      "Islamic Studies",
-      "Arabic Language",
-      "Quran Translation & Tafseer",
+      "Noorani Qaida Online for Kids",
+      "Islamic Studies & Sunnah Duas",
+      "Quranic Arabic & Word to Word Translation",
+      "Online Quran Classes for Children & Adults",
     ],
   };
 }
@@ -137,8 +182,14 @@ export function getCourseSchema(course: Course) {
       url: SITE_URL,
       logo: ACADEMY_LOGO,
     },
+    inLanguage: "en",
     educationalLevel: course.level,
     courseCode: course.id,
+    coursePrerequisites: course.prerequisites,
+    audience: {
+      "@type": "Audience",
+      audienceType: course.ageGroup,
+    },
     teaches: course.topics.join(", "),
     hasCourseInstance: {
       "@type": "CourseInstance",

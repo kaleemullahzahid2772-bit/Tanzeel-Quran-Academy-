@@ -5,14 +5,14 @@ import StudentGalleryClient from "@/components/StudentGalleryClient";
 import { getBreadcrumbSchema, SITE_URL } from "@/lib/schema";
 
 export const metadata: Metadata = {
-  title: "Student Gallery | Learning Moments | Al Tanzeel Academy",
+  title: "Student Gallery & Learning Milestones | Al Tanzeel Quran Academy",
   description:
-    "Explore real moments of student learning, online classes, and Quranic achievements at Al Tanzeel Quran Academy. See our global community of young and adult learners.",
+    "Explore authentic moments of student learning, 1-on-1 online classes, and Quranic achievements at Al Tanzeel Quran Academy. See our global community of young and adult learners.",
   alternates: {
     canonical: `${SITE_URL}/student-gallery`,
   },
   openGraph: {
-    title: "Student Gallery | Al Tanzeel Quran Academy",
+    title: "Student Gallery & Learning Milestones | Al Tanzeel Quran Academy",
     description:
       "Real moments of learning, growth, and Quranic education at Al Tanzeel Quran Academy.",
     url: `${SITE_URL}/student-gallery`,
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Student Gallery | Al Tanzeel Quran Academy",
+    title: "Student Gallery & Learning Milestones | Al Tanzeel Quran Academy",
     description:
       "Explore learning moments and student achievements at Al Tanzeel Quran Academy.",
     images: ["/gallery/student-1.jpg"],

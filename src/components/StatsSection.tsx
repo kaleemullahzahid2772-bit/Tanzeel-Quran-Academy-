@@ -14,9 +14,9 @@ const stats = [
     description: "Certified male & female Huffaz and Scholars",
   },
   {
-    number: "6+",
+    number: "7+",
     label: "Structured Courses",
-    description: "From basic Qaida to advanced Hifz & Tafseer",
+    description: "From beginner Noorani Qaida to advanced Hifz & Tajweed",
   },
 ];
 

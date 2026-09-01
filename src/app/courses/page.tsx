@@ -6,9 +6,9 @@ import { BookOpen, Sparkles, CheckCircle2 } from "lucide-react";
 import { getBreadcrumbSchema, getCourseCatalogSchema, SITE_URL } from "@/lib/schema";
 
 export const metadata: Metadata = {
-  title: "Online Quran Courses & Tajweed Classes | Al Tanzeel",
+  title: "Online Quran Courses & Tajweed Classes | Al Tanzeel Quran Academy",
   description:
-    "Explore structured 1-on-1 online Quran courses: Noorani Qaida, Tajweed Masterclass, Quran Memorization (Hifz), Quran Gateway, Translation & Women's Quranic course with certified tutors.",
+    "Explore 1-on-1 online Quran courses: Noorani Qaida for kids, Tajweed Masterclass, Quran Memorization (Hifz), Quran Gateway & Women Quran classes with certified scholars. Free 3-day trial!",
   alternates: {
     canonical: `${SITE_URL}/courses`,
   },
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Online Quran Courses & Tajweed Classes | Al Tanzeel",
+    title: "Online Quran Courses & Tajweed Classes | Al Tanzeel Quran Academy",
     description:
       "Explore 1-on-1 online Quran courses tailored for kids, adults, and sisters with flexible scheduling.",
     images: ["/courses/quranic-qaida.jpg"],
@@ -74,7 +74,7 @@ export default function CoursesPage() {
           </div>
 
           <h1 className="text-4xl sm:text-6xl font-black text-white">
-            Our Online <span className="text-[var(--color-accent)]">Quran Courses</span>
+            Online Quran Courses & <span className="text-[var(--color-accent)]">Tajweed Classes</span>
           </h1>
 
           <p className="text-gray-300 text-base sm:text-lg max-w-2xl leading-relaxed">

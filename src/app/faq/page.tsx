@@ -6,14 +6,14 @@ import { faqsData } from "@/data/faqs";
 import { getBreadcrumbSchema, getFAQPageSchema, SITE_URL } from "@/lib/schema";
 
 export const metadata: Metadata = {
-  title: "Frequently Asked Questions | Online Quran Classes FAQ",
+  title: "Online Quran Classes FAQ | Common Questions Answered | Al Tanzeel",
   description:
-    "Find answers about online 1-on-1 Quran classes, certified female teachers, trial class booking, fee structure, Western timezone scheduling (USA, UK, Canada, Australia), and software setup.",
+    "Find answers to common questions about online 1-on-1 Quran classes, certified female teachers, trial class booking, fee structure, Western timezone scheduling (USA, UK, Canada, Australia) & technical setup.",
   alternates: {
     canonical: `${SITE_URL}/faq`,
   },
   openGraph: {
-    title: "Frequently Asked Questions | Al Tanzeel Quran Academy",
+    title: "Online Quran Classes FAQ | Al Tanzeel Quran Academy",
     description:
       "Instant answers to common questions regarding online Quran classes, female teachers, trial bookings, and course structures.",
     url: `${SITE_URL}/faq`,
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Frequently Asked Questions | Al Tanzeel Quran Academy",
+    title: "Online Quran Classes FAQ | Al Tanzeel Quran Academy",
     description:
       "Find instant answers to questions regarding online 1-on-1 Quran classes and trial registration.",
     images: ["/why-choose-us.jpg"],

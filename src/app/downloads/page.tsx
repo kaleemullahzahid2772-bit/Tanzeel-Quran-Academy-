@@ -6,14 +6,14 @@ import { Download } from "lucide-react";
 import { getBreadcrumbSchema, SITE_URL } from "@/lib/schema";
 
 export const metadata: Metadata = {
-  title: "Free Islamic & Quran PDF Downloads | Al Tanzeel Academy",
+  title: "Free Quran & Islamic PDF Downloads | Al Tanzeel Quran Academy",
   description:
-    "Download free Tajweedi Quran PDF (13-line color coded), Word-by-Word English translation, English Noorani Qaida, Six Kalimas, Namaz learning guide, and Daily Sunnah Duas.",
+    "Download free Tajweedi Quran PDF (13-line color coded), Word-by-Word English translation, English Noorani Qaida for kids, Six Kalimas, Namaz guide & Daily Sunnah Duas.",
   alternates: {
     canonical: `${SITE_URL}/downloads`,
   },
   openGraph: {
-    title: "Free Islamic & Quran PDF Downloads | Al Tanzeel Quran Academy",
+    title: "Free Quran & Islamic PDF Downloads | Al Tanzeel Quran Academy",
     description:
       "Access our curated collection of free Quranic resources, color-coded Tajweed Quran, and daily Islamic learning materials in PDF format at zero cost.",
     url: `${SITE_URL}/downloads`,
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Free Islamic & Quran PDF Downloads | Al Tanzeel",
+    title: "Free Quran & Islamic PDF Downloads | Al Tanzeel Quran Academy",
     description:
       "Free color-coded Tajweed Quran PDF, English translation, Noorani Qaida, Namaz guide, and essential Duas.",
     images: ["/downloads/colorful-tajweed-quran.jpg"],

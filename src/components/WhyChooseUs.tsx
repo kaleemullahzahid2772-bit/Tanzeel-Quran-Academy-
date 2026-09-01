@@ -22,14 +22,14 @@ export default function WhyChooseUs() {
         {/* Section Heading */}
         <div className="text-center mb-14">
           <p className="text-[var(--color-accent)] uppercase tracking-[0.3em] text-xs sm:text-sm font-bold mb-2">
-            Our Commitment
+            Our Commitment to Quranic Excellence
           </p>
           <h2 className="text-3xl sm:text-5xl font-black text-white mb-6">
-            Why Choose <span className="text-[var(--color-accent)]">Us?</span>
+            Why Choose <span className="text-[var(--color-accent)]">Al Tanzeel Quran Academy?</span>
           </h2>
           <div className="w-16 h-1 bg-[var(--color-accent)] mx-auto rounded-full mb-8" />
           <p className="text-gray-300 max-w-3xl mx-auto text-base sm:text-lg leading-relaxed">
-            Al Tanzeel Quran Academy is committed to providing quality Quran education to Muslims around the world. Our mission is to help students develop a strong connection with the Holy Quran and understand the true teachings of Islam in a simple and effective way.
+            Al Tanzeel Quran Academy is dedicated to providing authentic, personalized online Quran education to kids, adults, and sisters worldwide. Our mission is to help every student learn Quran online with correct Tajweed, build fluent recitation, and understand the noble teachings of Islam in a nurturing, flexible environment.
           </p>
         </div>
 
@@ -39,7 +39,7 @@ export default function WhyChooseUs() {
           <div className="absolute inset-0 z-0">
             <img
               src="/why-choose-us.jpg"
-              alt="Qualified Quran teacher guiding student in 1-on-1 online Quran class at Al Tanzeel Quran Academy"
+              alt="Online Quran Teacher conducting 1-on-1 personalized Quran class with Tajweed at Al Tanzeel Quran Academy"
               loading="lazy"
               decoding="async"
               className="w-full h-full object-cover object-center"
@@ -53,16 +53,16 @@ export default function WhyChooseUs() {
             {/* Left Description Column */}
             <div className="space-y-4 text-gray-200 text-sm sm:text-base leading-relaxed">
               <p>
-                At Al Tanzeel Quran Academy, we follow a structured and step-by-step learning approach that enables students of all ages to learn the Quran correctly with proper Tajweed. Our goal is not only to teach Quran recitation but also to help students build confidence and consistency in their learning journey.
+                At Al Tanzeel Quran Academy, we follow a structured, step-by-step learning approach that enables students of all ages—from young children starting Noorani Qaida to adults perfecting their Tajweed—to master Quran recitation with confidence and proper phonetics.
               </p>
               <p>
-                Our online learning system allows students to take Quran classes from the comfort of their homes. With flexible scheduling, you can easily choose class timings that fit your daily routine. Whether you are at home or traveling with your family, our online platform keeps you connected with your Quran lessons without interruption.
+                Our interactive online Quran classes allow students to learn from the comfort and safety of home. With 24/7 flexible scheduling across Western time zones (USA, UK, Canada, Australia), families can easily choose class times that seamlessly fit their daily routine without disruption.
               </p>
               <p>
-                Our qualified and experienced Quran teachers are dedicated to guiding every student with patience and care. They understand the importance of time and maintain punctuality in every class to ensure a smooth and reliable learning experience.
+                Our qualified male and female Quran tutors are certified scholars and Huffaz who guide each student with patience, individual attention, and English fluency. We maintain regular monthly progress assessments to keep parents informed of their children&apos;s Quranic growth.
               </p>
               <p>
-                By joining Al Tanzeel Quran Academy, students receive personal attention, structured guidance, and a supportive learning environment that helps them improve their Quran recitation and understanding. With regular practice and expert guidance, students can soon read the Holy Quran with confidence and fluency.
+                By joining Al Tanzeel Quran Academy, students receive dedicated 1-on-1 personalized mentorship, structured Tajweed practice, and spiritual encouragement that fosters a lifelong love for the Holy Quran.
               </p>
             </div>
 

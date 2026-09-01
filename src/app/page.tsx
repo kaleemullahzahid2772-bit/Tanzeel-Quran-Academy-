@@ -8,16 +8,16 @@ import { getCourseCatalogSchema, SITE_URL } from "@/lib/schema";
 import { coursesData } from "@/data/courses";
 
 export const metadata: Metadata = {
-  title: "Al Tanzeel Quran Academy | Online Quran Classes & Tajweed",
+  title: "Online Quran Classes for Kids & Adults | Al Tanzeel Quran Academy",
   description:
-    "Learn Quran online with certified male & female teachers. 1-on-1 personalized classes for kids & adults with Tajweed, Hifz & Noorani Qaida. Book your 3-day free trial class today!",
+    "Learn Quran online with certified male and female scholars at Al Tanzeel Quran Academy. 1-on-1 personalized classes with Tajweed, Hifz & Noorani Qaida for kids & adults worldwide. Book your 3-day free trial today!",
   alternates: {
     canonical: SITE_URL,
   },
   openGraph: {
-    title: "Al Tanzeel Quran Academy | Online Quran Classes & Tajweed",
+    title: "Online Quran Classes for Kids & Adults | Al Tanzeel Quran Academy",
     description:
-      "Join thousands of students learning Quran online with certified scholars. Flexible 1-on-1 classes for kids, adults, and sisters worldwide. Book your 3-day free trial!",
+      "Join students worldwide learning Quran online with certified male and female scholars. Flexible 1-on-1 classes for kids, adults, and sisters. Book your 3-day free trial!",
     url: SITE_URL,
     siteName: "Al Tanzeel Quran Academy",
     images: [
@@ -25,14 +25,14 @@ export const metadata: Metadata = {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Al Tanzeel Quran Academy - Online Quran Classes & Tajweed",
+        alt: "Al Tanzeel Quran Academy - Online Quran Classes for Kids & Adults",
       },
     ],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Al Tanzeel Quran Academy | Online Quran Classes & Tajweed",
+    title: "Online Quran Classes for Kids & Adults | Al Tanzeel Quran Academy",
     description:
       "Online Quran classes for kids and adults with certified male and female scholars. Book a 3-day free trial class today!",
     images: ["/og-image.jpg"],

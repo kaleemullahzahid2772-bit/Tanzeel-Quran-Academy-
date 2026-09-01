@@ -4,14 +4,14 @@ import { MessageCircle, Mail, Globe } from "lucide-react";
 import { getBreadcrumbSchema, getContactPageSchema, SITE_URL } from "@/lib/schema";
 
 export const metadata: Metadata = {
-  title: "Contact Us | Book 3-Day Free Trial | Al Tanzeel Academy",
+  title: "Contact Us & Book Free Trial Class | Al Tanzeel Quran Academy",
   description:
     "Get in touch with Al Tanzeel Quran Academy. Book your 3-day free trial class or ask questions about our online Quran courses with certified male & female teachers. 24/7 global support.",
   alternates: {
     canonical: `${SITE_URL}/contact`,
   },
   openGraph: {
-    title: "Contact Us | Al Tanzeel Quran Academy",
+    title: "Contact Us & Book Free Trial Class | Al Tanzeel Quran Academy",
     description:
       "Connect with Al Tanzeel Quran Academy 24/7 on WhatsApp (+92 327 4816872) or Email (info@altanzeelquranacademy.com) to schedule your free trial class.",
     url: `${SITE_URL}/contact`,
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Contact Us | Al Tanzeel Quran Academy",
+    title: "Contact Us & Book Free Trial Class | Al Tanzeel Quran Academy",
     description:
       "Get in touch with Al Tanzeel Quran Academy for free trial class bookings and online course guidance.",
     images: ["/why-choose-us.jpg"],

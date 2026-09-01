@@ -35,7 +35,7 @@ export async function generateMetadata({
     : `${SITE_URL}${item.image}`;
 
   return {
-    title: `${item.title} PDF Free Download | Al Tanzeel Academy`,
+    title: `${item.title} PDF Free Download | Al Tanzeel Quran Academy`,
     description: item.description,
     alternates: {
       canonical: pageUrl,
@@ -50,14 +50,14 @@ export async function generateMetadata({
           url: imageUrl,
           width: 1200,
           height: 630,
-          alt: `${item.title} - Free Islamic PDF Resource`,
+          alt: `${item.title} - Free Islamic PDF Resource at Al Tanzeel Quran Academy`,
         },
       ],
       type: "article",
     },
     twitter: {
       card: "summary_large_image",
-      title: `${item.title} PDF Free Download | Al Tanzeel`,
+      title: `${item.title} PDF Free Download | Al Tanzeel Quran Academy`,
       description: item.description,
       images: [imageUrl],
     },
