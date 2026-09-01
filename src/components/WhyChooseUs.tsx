@@ -3,6 +3,8 @@
 import React from "react";
 
 const features = [
+  "Certified Islamic Educators",
+  "1-on-1 Personalized Classes",
   "Free Trial Classes",
   "Special Focus on Slow Learners",
   "Online Quran Memorization",
@@ -37,7 +39,9 @@ export default function WhyChooseUs() {
           <div className="absolute inset-0 z-0">
             <img
               src="/why-choose-us.jpg"
-              alt="Teacher guiding student learning Quran online"
+              alt="Qualified Quran teacher guiding student in 1-on-1 online Quran class at Al Tanzeel Quran Academy"
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover object-center"
             />
             {/* Dark gradient overlay for text readability */}

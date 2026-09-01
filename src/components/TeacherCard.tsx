@@ -25,8 +25,10 @@ export default function TeacherCard({ teacher }: TeacherCardProps) {
             {teacher.image && !imgError ? (
               <img
                 src={teacher.image}
-                alt={teacher.name}
+                alt={`${teacher.name} - ${teacher.role} at Al Tanzeel Quran Academy`}
                 onError={() => setImgError(true)}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover rounded-2xl"
                 style={{ objectPosition: teacher.imagePosition || "top" }}
               />

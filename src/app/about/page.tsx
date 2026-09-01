@@ -1,12 +1,40 @@
 import React from "react";
-import Metadata from "next";
+import type { Metadata } from "next";
 import { BookOpen, ShieldCheck, HeartHandshake, Sparkles, Target, Compass, Award } from "lucide-react";
 import TeacherCard from "@/components/TeacherCard";
 import { teachersData } from "@/data/teachers";
+import { getAboutPageSchema, getBreadcrumbSchema, SITE_URL } from "@/lib/schema";
 
-export const metadata = {
-  title: "About Us",
-  description: "Learn about Al Tanzeel Quran Academy's mission, leadership, and certified faculty dedicated to global Islamic education.",
+export const metadata: Metadata = {
+  title: "About Us | Certified Online Quran Teachers | Al Tanzeel",
+  description:
+    "Learn about Al Tanzeel Quran Academy's mission, leadership, and certified male & female Islamic scholars dedicated to global 1-on-1 online Quran tutoring across USA, UK, Canada & worldwide.",
+  alternates: {
+    canonical: `${SITE_URL}/about`,
+  },
+  openGraph: {
+    title: "About Us | Certified Online Quran Teachers | Al Tanzeel Quran Academy",
+    description:
+      "Discover our mission, certified Huffaz and female Islamic scholars providing 1-on-1 online Quran tutoring across USA, UK, Canada, Australia & worldwide.",
+    url: `${SITE_URL}/about`,
+    siteName: "Al Tanzeel Quran Academy",
+    images: [
+      {
+        url: "/why-choose-us.jpg",
+        width: 1200,
+        height: 630,
+        alt: "About Al Tanzeel Quran Academy - Certified Online Quran Faculty",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About Us | Certified Online Quran Teachers | Al Tanzeel",
+    description:
+      "Nurturing a deep connection with the Holy Quran through modern, accessible 1-on-1 online tutoring with certified scholars.",
+    images: ["/why-choose-us.jpg"],
+  },
 };
 
 const values = [
@@ -33,8 +61,28 @@ const values = [
 ];
 
 export default function AboutPage() {
+  const aboutSchema = getAboutPageSchema();
+  const breadcrumbSchema = getBreadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: "About Us", url: "/about" },
+  ]);
+
   return (
     <div className="flex flex-col w-full">
+      {/* Schema.org AboutPage & BreadcrumbList JSON-LD */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(aboutSchema),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbSchema),
+        }}
+      />
+
       {/* Hero Banner Header */}
       <section className="relative bg-[var(--color-black-soft)] py-20 px-4 border-b border-[var(--color-border)] overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
@@ -59,6 +107,9 @@ export default function AboutPage() {
       <section className="bg-[var(--color-black)] py-20 px-4">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6 text-gray-300 text-sm sm:text-base leading-relaxed">
+            <h2 className="text-2xl sm:text-3xl font-black text-white">
+              Committed to Excellence in <span className="text-[var(--color-accent)]">Quranic Education</span>
+            </h2>
             <p className="text-lg font-semibold text-white">
               Al Tanzeel Quran Academy is committed to providing quality Quran education to Muslims around the world. Our mission is to help students develop a strong connection with the Holy Quran and understand the true teachings of Islam in a simple and effective way.
             </p>
@@ -84,7 +135,7 @@ export default function AboutPage() {
                 <div>
                   <h4 className="font-bold text-white text-base">Personalized 1-on-1 Focus</h4>
                   <p className="text-gray-400 text-xs sm:text-sm mt-0.5">
-                    No crowded group sessions. Every minute of class is dedicated exclusively to one student's individual progress.
+                    No crowded group sessions. Every minute of class is dedicated exclusively to one student&apos;s individual progress.
                   </p>
                 </div>
               </div>
@@ -124,7 +175,7 @@ export default function AboutPage() {
             </div>
             <h3 className="text-2xl font-black text-white">Our Vision</h3>
             <p className="text-gray-300 text-sm leading-relaxed">
-              To become the world's most trusted online Quran Academy, recognized for pedagogical excellence, compassionate female and male faculty, and accessible Islamic learning resources for the global Ummah.
+              To become the world&apos;s most trusted online Quran Academy, recognized for pedagogical excellence, compassionate female and male faculty, and accessible Islamic learning resources for the global Ummah.
             </p>
           </div>
         </div>

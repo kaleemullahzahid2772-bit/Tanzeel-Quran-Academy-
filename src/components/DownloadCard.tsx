@@ -44,12 +44,12 @@ export default function DownloadCard({ item }: DownloadCardProps) {
         }`}
       >
         {/* Visual Image Header */}
-        <Link href={`/downloads/${item.slug}`} className="block">
+        <Link href={`/downloads/${item.slug}`} className="block" title={`View ${item.title} Download Page`}>
           <div className="relative h-52 w-full overflow-hidden bg-[var(--color-black-soft)] border-b border-[var(--color-border)]">
             {item.image ? (
               <Image
                 src={item.image}
-                alt={item.title}
+                alt={`${item.title} - Free Islamic PDF Resource at Al Tanzeel Quran Academy`}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -92,7 +92,7 @@ export default function DownloadCard({ item }: DownloadCardProps) {
 
         {/* Content */}
         <div className="p-5 flex flex-col gap-3 flex-1">
-          <Link href={`/downloads/${item.slug}`}>
+          <Link href={`/downloads/${item.slug}`} title={`View ${item.title}`}>
             <h3 className="text-white font-black text-base group-hover:text-[var(--color-accent)] transition-colors duration-300 leading-tight">
               {item.title}
             </h3>

@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://tanzeelquranacademy.org/sitemap.xml

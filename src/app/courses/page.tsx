@@ -1,17 +1,65 @@
 import React from "react";
-import Metadata from "next";
+import type { Metadata } from "next";
 import CourseCard from "@/components/CourseCard";
 import { coursesData } from "@/data/courses";
 import { BookOpen, Sparkles, CheckCircle2 } from "lucide-react";
+import { getBreadcrumbSchema, getCourseCatalogSchema, SITE_URL } from "@/lib/schema";
 
-export const metadata = {
-  title: "Courses",
-  description: "Explore our range of 1-on-1 online Quranic courses including Qaida, Tajweed, Hifz, Tafseer, and Women's Quranic Course.",
+export const metadata: Metadata = {
+  title: "Online Quran Courses & Tajweed Classes | Al Tanzeel",
+  description:
+    "Explore structured 1-on-1 online Quran courses: Noorani Qaida, Tajweed Masterclass, Quran Memorization (Hifz), Quran Gateway, Translation & Women's Quranic course with certified tutors.",
+  alternates: {
+    canonical: `${SITE_URL}/courses`,
+  },
+  openGraph: {
+    title: "Online Quran Courses & Tajweed Classes | Al Tanzeel Quran Academy",
+    description:
+      "Structured 1-on-1 online Quran courses with certified male & female teachers. From basic Qaida to advanced Hifz & Tajweed. Free 3-day trial!",
+    url: `${SITE_URL}/courses`,
+    siteName: "Al Tanzeel Quran Academy",
+    images: [
+      {
+        url: "/courses/quranic-qaida.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Online Quran Courses at Al Tanzeel Quran Academy",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Online Quran Courses & Tajweed Classes | Al Tanzeel",
+    description:
+      "Explore 1-on-1 online Quran courses tailored for kids, adults, and sisters with flexible scheduling.",
+    images: ["/courses/quranic-qaida.jpg"],
+  },
 };
 
 export default function CoursesPage() {
+  const catalogSchema = getCourseCatalogSchema(coursesData);
+  const breadcrumbSchema = getBreadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: "Online Quran Courses", url: "/courses" },
+  ]);
+
   return (
     <div className="flex flex-col w-full">
+      {/* Schema.org Course Catalog & BreadcrumbList JSON-LD */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(catalogSchema),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbSchema),
+        }}
+      />
+
       {/* Hero Header */}
       <section className="relative bg-[var(--color-black-soft)] py-20 px-4 border-b border-[var(--color-border)] overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
@@ -26,11 +74,11 @@ export default function CoursesPage() {
           </div>
 
           <h1 className="text-4xl sm:text-6xl font-black text-white">
-            Our Online <span className="text-[var(--color-accent)]">Courses</span>
+            Our Online <span className="text-[var(--color-accent)]">Quran Courses</span>
           </h1>
 
           <p className="text-gray-300 text-base sm:text-lg max-w-2xl leading-relaxed">
-            Tanzeel Quran Academy offers structured Quranic and Islamic courses tailored to meet the needs of every student. Guided by certified male and female teachers fluent in English.
+            Al Tanzeel Quran Academy offers structured Quranic and Islamic courses tailored to meet the needs of every student. Guided by certified male and female teachers fluent in English.
           </p>
         </div>
       </section>
@@ -38,6 +86,15 @@ export default function CoursesPage() {
       {/* Course Listing Grid */}
       <section className="bg-[var(--color-black)] py-20 px-4">
         <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl sm:text-4xl font-black text-white mb-3">
+              Explore Our Comprehensive <span className="text-[var(--color-accent)]">Curriculum</span>
+            </h2>
+            <p className="text-gray-400 text-sm max-w-2xl mx-auto">
+              From beginner Arabic reading fundamentals to advanced Hifz and classical Tajweed rules, find the ideal course for your learning goals.
+            </p>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {coursesData.map((course) => (
               <CourseCard key={course.id} course={course} />

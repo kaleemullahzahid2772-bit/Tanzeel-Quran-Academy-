@@ -19,7 +19,7 @@ const originalSlides: HeroSlide[] = [
   {
     src: "/hero/slide-1.jpg",
     mobileSrc: "/hero/mobile-slide-1.jpg",
-    alt: "Holy Quran gracefully displayed on marble table with warm ambient lamp light",
+    alt: "Holy Quran displayed on table with warm lighting - Al Tanzeel Quran Academy online classes",
     title: "Online Qur'an",
     highlight: "Classes",
     subtitle: "Al Tanzeel Quran Academy",
@@ -28,7 +28,7 @@ const originalSlides: HeroSlide[] = [
   {
     src: "/hero/slide-2.jpg",
     mobileSrc: "/hero/mobile-slide-2.jpg",
-    alt: "Young Muslim boy attending live 1-on-1 online Quran class on laptop",
+    alt: "Young Muslim boy attending live 1-on-1 online Quran class with certified tutor",
     title: "Learn Tajweed",
     highlight: "From Home",
     subtitle: "Qualified Male & Female Tutors",
@@ -37,7 +37,7 @@ const originalSlides: HeroSlide[] = [
   {
     src: "/hero/slide-3.png",
     mobileSrc: "/hero/mobile-slide-3.jpg",
-    alt: "Young Muslim girl taking online Quran lesson with female scholar on laptop",
+    alt: "Young Muslim girl taking online Quran memorization Hifz lesson with female scholar",
     title: "Memorize Holy",
     highlight: "Quran (Hifz)",
     subtitle: "Structured Progress & Daily Revision",

@@ -6,8 +6,6 @@ import { usePathname } from "next/navigation";
 import {
   MessageCircle,
   Mail,
-  Facebook,
-  Instagram,
   Menu,
   X,
 } from "lucide-react";
@@ -34,83 +32,32 @@ export default function Navbar() {
       <header className="w-full relative z-50">
         {/* Top Info Bar */}
         <div className="w-full bg-[var(--color-black-nav)] border-b border-[var(--color-border)] py-2 text-xs">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap items-center justify-between gap-2">
-            {/* Left Contact Details */}
-            <div className="hidden lg:flex items-center gap-6 text-[var(--color-gray-muted)]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
+            {/* Contact Details */}
+            <div className="flex items-center gap-4 sm:gap-6 text-[var(--color-gray-muted)]">
               <a
                 href="https://wa.me/923274816872"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="WhatsApp Support +92 327 4816872"
                 className="flex items-center gap-2 group hover:text-[#25D366] transition-all"
               >
                 <div className="p-1.5 rounded-lg bg-[#25D366]/10 group-hover:bg-[#25D366]/20 transition-all">
                   <WhatsAppIcon className="w-3.5 h-3.5 text-[#25D366]" />
                 </div>
-                <span className="font-medium">WhatsApp: +92 327 4816872</span>
+                <span className="font-medium text-[11px] sm:text-xs">WhatsApp: +92 327 4816872</span>
               </a>
 
               <a
                 href="mailto:info@altanzeelquranacademy.com"
+                aria-label="Email info@altanzeelquranacademy.com"
                 className="flex items-center gap-2 group hover:text-[var(--color-sky)] transition-all"
               >
                 <div className="p-1.5 rounded-lg bg-[var(--color-accent)]/10 group-hover:bg-[var(--color-accent)]/20 transition-all">
                   <Mail className="w-3.5 h-3.5 text-[var(--color-accent)]" />
                 </div>
-                <span className="font-medium">info@altanzeelquranacademy.com</span>
+                <span className="font-medium text-[11px] sm:text-xs">info@altanzeelquranacademy.com</span>
               </a>
-            </div>
-
-            {/* Mobile quick actions */}
-            <div className="flex lg:hidden items-center gap-2 text-[10px]">
-              <a
-                href="https://wa.me/923274816872"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1 rounded-full bg-[#25D366]/10 px-2.5 py-1 text-[#25D366] hover:bg-[#25D366]/20 font-semibold"
-              >
-                <MessageCircle className="w-3 h-3" />
-                <span>WhatsApp</span>
-              </a>
-              <a
-                href="mailto:info@altanzeelquranacademy.com"
-                className="flex items-center gap-1 rounded-full bg-[var(--color-accent)]/10 px-2.5 py-1 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 font-semibold"
-              >
-                <Mail className="w-3 h-3" />
-                <span>Mail</span>
-              </a>
-            </div>
-
-            {/* Right Social & CTAs */}
-            <div className="flex items-center gap-4 text-[var(--color-gray-muted)]">
-              <div className="flex items-center gap-3">
-                <a
-                  href="https://facebook.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Facebook Page"
-                  className="hover:text-[var(--color-accent)] transition-colors p-1"
-                >
-                  <Facebook className="w-3.5 h-3.5" />
-                </a>
-                <a
-                  href="https://instagram.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Instagram Page"
-                  className="hover:text-[var(--color-accent)] transition-colors p-1"
-                >
-                  <Instagram className="w-3.5 h-3.5" />
-                </a>
-              </div>
-
-              <span className="hidden sm:inline-block w-px h-3 bg-gray-800" />
-
-              <button
-                onClick={() => setIsModalOpen(true)}
-                className="hidden sm:inline-flex items-center gap-1.5 text-[var(--color-accent)] hover:text-[var(--color-accent-light)] font-semibold transition-colors uppercase tracking-wider text-[11px]"
-              >
-                <span>Book Free Trial</span>
-              </button>
             </div>
           </div>
         </div>
@@ -119,11 +66,13 @@ export default function Navbar() {
         <nav className="w-full bg-[var(--color-black-soft)]/90 backdrop-blur-md border-b border-[var(--color-border)] py-3">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-3 group">
+            <Link href="/" className="flex items-center gap-3 group" title="Al Tanzeel Quran Academy Home">
               <div className="relative w-48 h-12 flex items-center">
                 <img
                   src="/tanzeel-top-logo.png"
-                  alt="Tanzeel Quran Academy"
+                  alt="Al Tanzeel Quran Academy - Online Quran Academy & Tajweed Classes"
+                  width={192}
+                  height={48}
                   className="h-full w-auto object-contain transition-transform group-hover:scale-105"
                 />
               </div>
@@ -137,6 +86,7 @@ export default function Navbar() {
                   <Link
                     key={link.name}
                     href={link.href}
+                    title={link.name}
                     className={`px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${
                       isActive
                         ? "bg-[var(--color-surface)] text-[var(--color-accent)] border border-[var(--color-accent)]/30"
@@ -180,6 +130,7 @@ export default function Navbar() {
                   <Link
                     key={link.name}
                     href={link.href}
+                    title={link.name}
                     onClick={() => setMobileMenuOpen(false)}
                     className={`px-4 py-2.5 rounded-xl text-sm font-bold uppercase tracking-wider transition-all ${
                       isActive

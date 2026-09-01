@@ -1,15 +1,63 @@
 import React from "react";
-import Metadata from "next";
-import { MessageCircle, Mail, Globe, CheckCircle2 } from "lucide-react";
+import type { Metadata } from "next";
+import { MessageCircle, Mail, Globe } from "lucide-react";
+import { getBreadcrumbSchema, getContactPageSchema, SITE_URL } from "@/lib/schema";
 
-export const metadata = {
-  title: "Contact Us - Al Tanzeel Quran Academy",
-  description: "Get in touch with Al Tanzeel Quran Academy. Book your 3-day free trial class or ask any questions about our online Quran courses.",
+export const metadata: Metadata = {
+  title: "Contact Us | Book 3-Day Free Trial | Al Tanzeel Academy",
+  description:
+    "Get in touch with Al Tanzeel Quran Academy. Book your 3-day free trial class or ask questions about our online Quran courses with certified male & female teachers. 24/7 global support.",
+  alternates: {
+    canonical: `${SITE_URL}/contact`,
+  },
+  openGraph: {
+    title: "Contact Us | Al Tanzeel Quran Academy",
+    description:
+      "Connect with Al Tanzeel Quran Academy 24/7 on WhatsApp (+92 327 4816872) or Email (info@altanzeelquranacademy.com) to schedule your free trial class.",
+    url: `${SITE_URL}/contact`,
+    siteName: "Al Tanzeel Quran Academy",
+    images: [
+      {
+        url: "/why-choose-us.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Contact Al Tanzeel Quran Academy",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Contact Us | Al Tanzeel Quran Academy",
+    description:
+      "Get in touch with Al Tanzeel Quran Academy for free trial class bookings and online course guidance.",
+    images: ["/why-choose-us.jpg"],
+  },
 };
 
 export default function ContactPage() {
+  const contactSchema = getContactPageSchema();
+  const breadcrumbSchema = getBreadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: "Contact Us", url: "/contact" },
+  ]);
+
   return (
     <div className="flex flex-col w-full min-h-screen">
+      {/* Schema.org ContactPage & BreadcrumbList JSON-LD */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(contactSchema),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbSchema),
+        }}
+      />
+
       {/* Header Banner */}
       <section className="relative overflow-hidden bg-[var(--color-black-soft)] py-16 sm:py-20 px-4 border-b border-[var(--color-border)]">
         <div className="absolute inset-0 pointer-events-none">
@@ -87,7 +135,7 @@ export default function ContactPage() {
               <Globe className="w-7 h-7" />
             </div>
             <div>
-              <h3 className="text-white font-bold text-base mb-1">Global Student Coverage</h3>
+              <h2 className="text-white font-bold text-base mb-1">Global Student Coverage</h2>
               <p className="text-gray-400 text-xs sm:text-sm leading-relaxed">
                 We serve Muslim families across the United States, Canada, United Kingdom, Australia, New Zealand, and Western Europe across all timezones.
               </p>

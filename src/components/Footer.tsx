@@ -36,6 +36,17 @@ export default function Footer() {
                 <p className="text-gray-400 text-xs sm:text-sm mt-3 leading-relaxed">
                   No credit card required. Experience live 1-on-1 interactive lessons with expert Quran scholars from the comfort of your home.
                 </p>
+
+                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4 mt-5">
+                  <span className="inline-flex items-center gap-2 text-xs text-gray-300 font-medium bg-black/40 border border-white/10 px-3.5 py-1.5 rounded-lg shadow-sm">
+                    <ShieldCheck className="w-4 h-4 text-[var(--color-accent)] shrink-0" />
+                    <span>Certified Islamic Educators</span>
+                  </span>
+                  <span className="inline-flex items-center gap-2 text-xs text-gray-300 font-medium bg-black/40 border border-white/10 px-3.5 py-1.5 rounded-lg shadow-sm">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>1-on-1 Personalized Classes</span>
+                  </span>
+                </div>
               </div>
 
               <div className="flex flex-col sm:flex-row items-center gap-4 shrink-0 w-full lg:w-auto">
@@ -51,6 +62,7 @@ export default function Footer() {
                   href="https://wa.me/923274816872"
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label="Chat with Al Tanzeel Quran Academy on WhatsApp"
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#25D366]/10 border border-[#25D366]/30 text-[#25D366] hover:bg-[#25D366]/20 font-bold text-xs uppercase tracking-wider transition-all"
                 >
                   <MessageCircle className="w-4 h-4" />
@@ -64,11 +76,13 @@ export default function Footer() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-[var(--color-border)]">
             {/* Column 1: Brand & Logo */}
             <div className="flex flex-col gap-5">
-              <Link href="/" className="inline-block">
+              <Link href="/" className="inline-block" title="Al Tanzeel Quran Academy Home">
                 <div className="relative w-64 sm:w-72 h-20 sm:h-24">
                   <img
                     src="/tanzeel-logo.png"
-                    alt="Tanzeel Quran Academy"
+                    alt="Al Tanzeel Quran Academy - Online Quran Classes Logo"
+                    width={288}
+                    height={96}
                     className="h-full w-auto object-contain"
                   />
                 </div>
@@ -83,14 +97,14 @@ export default function Footer() {
                   href="https://wa.me/923274816872"
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="WhatsApp"
+                  aria-label="WhatsApp Support"
                   className="w-9 h-9 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[#25D366] text-[#25D366] flex items-center justify-center transition-all hover:scale-110"
                 >
                   <MessageCircle className="w-4 h-4" />
                 </a>
                 <a
                   href="mailto:info@altanzeelquranacademy.com"
-                  aria-label="Email"
+                  aria-label="Email Support"
                   className="w-9 h-9 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-accent)] text-[var(--color-accent)] flex items-center justify-center transition-all hover:scale-110"
                 >
                   <Mail className="w-4 h-4" />
@@ -99,7 +113,7 @@ export default function Footer() {
                   href="https://facebook.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="Facebook"
+                  aria-label="Facebook Page"
                   className="w-9 h-9 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-sky)] text-[var(--color-sky)] flex items-center justify-center transition-all hover:scale-110"
                 >
                   <Facebook className="w-4 h-4" />
@@ -108,7 +122,7 @@ export default function Footer() {
                   href="https://instagram.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="Instagram"
+                  aria-label="Instagram Page"
                   className="w-9 h-9 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-accent)] text-[var(--color-accent)] flex items-center justify-center transition-all hover:scale-110"
                 >
                   <Instagram className="w-4 h-4" />
@@ -253,19 +267,10 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Bottom Copyright & Guarantee */}
+          {/* Bottom Copyright */}
           <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500">
             <p>© {new Date().getFullYear()} Al Tanzeel Quran Academy. All rights reserved.</p>
-            <div className="flex items-center gap-6">
-              <span className="flex items-center gap-1.5 text-gray-400">
-                <ShieldCheck className="w-4 h-4 text-[var(--color-accent)]" />
-                <span>Certified Islamic Educators</span>
-              </span>
-              <span className="flex items-center gap-1.5 text-gray-400">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                <span>1-on-1 Personalized Classes</span>
-              </span>
-            </div>
+            <p className="text-gray-500">Dedicated to Authentic Quranic Learning Worldwide</p>
           </div>
         </div>
       </footer>

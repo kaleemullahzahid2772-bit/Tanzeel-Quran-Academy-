@@ -21,12 +21,14 @@ export default function CourseCard({ course }: CourseCardProps) {
         className="bg-[var(--color-surface)] rounded-2xl flex flex-col group cursor-pointer border border-[#5b9bc6]/40 hover:border-[#5b9bc6] transition-all duration-300 shadow-[0_6px_25px_rgba(0,0,0,0.6)] hover:shadow-[0_0_25px_rgba(91,155,198,0.4)] hover:-translate-y-1.5 overflow-hidden"
       >
         {/* Top Image Banner */}
-        <div className="relative h-52 w-full overflow-hidden bg-[var(--color-black-soft)] border-b border-[#5b9bc6]/20">
+        <Link href={`/courses/${course.slug}`} className="block relative h-52 w-full overflow-hidden bg-[var(--color-black-soft)] border-b border-[#5b9bc6]/20">
           {course.image && !imgError ? (
             <img
               src={course.image}
-              alt={course.title}
+              alt={`${course.title} - Online Quran Class at Al Tanzeel Quran Academy`}
               onError={() => setImgError(true)}
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
             />
           ) : (
@@ -47,13 +49,15 @@ export default function CourseCard({ course }: CourseCardProps) {
               {course.badge}
             </span>
           )}
-        </div>
+        </Link>
 
         {/* Card Content */}
         <div className="p-6 flex flex-col gap-3 flex-1">
-          <h3 className="font-black text-xl text-white group-hover:text-[var(--color-accent-light)] transition-colors duration-300">
-            {course.title}
-          </h3>
+          <Link href={`/courses/${course.slug}`}>
+            <h3 className="font-black text-xl text-white group-hover:text-[var(--color-accent-light)] transition-colors duration-300">
+              {course.title}
+            </h3>
+          </Link>
 
           <p className="text-gray-400 text-xs sm:text-sm leading-relaxed flex-1 line-clamp-3">
             {course.shortDescription}
@@ -84,6 +88,7 @@ export default function CourseCard({ course }: CourseCardProps) {
             <Link
               href={`/courses/${course.slug}`}
               className="inline-flex items-center gap-1 text-xs font-bold text-[var(--color-accent)] hover:text-white uppercase tracking-wider transition-colors group/link"
+              title={`View ${course.title} Course Details`}
             >
               <span>View Details</span>
               <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/link:translate-x-1" />
