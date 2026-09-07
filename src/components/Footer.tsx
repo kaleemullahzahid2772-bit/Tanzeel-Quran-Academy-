@@ -34,7 +34,7 @@ export default function Footer() {
                   Book Your 3-Day <span className="text-[var(--color-accent)]">Free Trial Class</span>
                 </h3>
                 <p className="text-gray-400 text-xs sm:text-sm mt-3 leading-relaxed">
-                  No credit card required. Experience live 1-on-1 interactive lessons with expert Quran scholars from the comfort of your home.
+                  No credit card required. Experience live 1-on-1 interactive lessons with certified male and female Quran scholars from the comfort of your home.
                 </p>
 
                 <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4 mt-5">
@@ -74,7 +74,7 @@ export default function Footer() {
 
           {/* 4 Main Footer Columns */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-[var(--color-border)]">
-            {/* Column 1: Brand & Logo */}
+            {/* Column 1: Brand & Identity */}
             <div className="flex flex-col gap-5">
               <Link href="/" className="inline-block" title="Al Tanzeel Quran Academy Home">
                 <div className="relative w-64 sm:w-72 h-20 sm:h-24">
@@ -89,7 +89,7 @@ export default function Footer() {
               </Link>
 
               <p className="text-gray-400 text-xs sm:text-sm leading-relaxed">
-                Al Tanzeel Quran Academy is a premier online Islamic institute dedicated to teaching Tajweed, Quran Recitation, Hifz, Arabic Language, and Islamic Studies to students worldwide.
+                Al Tanzeel Quran Academy is an authentic online Quran academy providing personalized 1-on-1 Quran classes, Tajweed mastery, Noorani Qaida, and Quran memorization for students worldwide.
               </p>
 
               <div className="flex items-center gap-3 pt-2">
@@ -130,90 +130,95 @@ export default function Footer() {
               </div>
             </div>
 
-            {/* Column 2: Quick Links */}
+            {/* Column 2: Online Quran Programs */}
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-1">
                 <h4 className="text-white font-bold text-sm uppercase tracking-wider">
-                  Quick Navigation
+                  Online Quran Programs
                 </h4>
                 <div className="w-8 h-0.5 bg-[var(--color-accent)] rounded-full" />
               </div>
               <ul className="flex flex-col gap-2.5 text-xs sm:text-sm">
                 <li>
-                  <Link href="/" className="hover:text-[var(--color-accent)] transition-colors">
-                    Home
+                  <Link href="/online-quran-classes" className="hover:text-[var(--color-accent)] transition-colors">
+                    Online Quran Classes
                   </Link>
                 </li>
                 <li>
-                  <Link href="/about" className="hover:text-[var(--color-accent)] transition-colors">
-                    About Academy
+                  <Link href="/online-quran-teacher" className="hover:text-[var(--color-accent)] transition-colors">
+                    Online Quran Teachers
                   </Link>
                 </li>
                 <li>
-                  <Link href="/courses" className="hover:text-[var(--color-accent)] transition-colors">
-                    All Courses
+                  <Link href="/quran-classes-for-kids" className="hover:text-[var(--color-accent)] transition-colors">
+                    Quran Classes for Kids
                   </Link>
                 </li>
                 <li>
-                  <Link href="/downloads" className="hover:text-[var(--color-accent)] transition-colors">
-                    Free PDF Downloads
+                  <Link href="/learn-quran-with-tajweed" className="hover:text-[var(--color-accent)] transition-colors">
+                    Learn Quran with Tajweed
                   </Link>
                 </li>
                 <li>
-                  <Link href="/student-gallery" className="hover:text-[var(--color-accent)] transition-colors">
-                    Student Gallery
+                  <Link href="/quran-memorization" className="hover:text-[var(--color-accent)] transition-colors">
+                    Quran Memorization (Hifz)
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contact" className="hover:text-[var(--color-accent)] transition-colors">
-                    Contact Us
+                  <Link href="/noorani-qaida-online" className="hover:text-[var(--color-accent)] transition-colors">
+                    Noorani Qaida Online
                   </Link>
                 </li>
                 <li>
-                  <Link href="/faq" className="hover:text-[var(--color-accent)] transition-colors">
-                    Frequently Asked Questions
+                  <Link href="/courses/women-quranic-course" className="hover:text-[var(--color-accent)] transition-colors">
+                    Women&apos;s Quran Course
                   </Link>
                 </li>
               </ul>
             </div>
 
-            {/* Column 3: Featured Courses */}
+            {/* Column 3: Learning Guides & Downloads */}
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-1">
                 <h4 className="text-white font-bold text-sm uppercase tracking-wider">
-                  Featured Courses
+                  Learning Guides & Resources
                 </h4>
                 <div className="w-8 h-0.5 bg-[var(--color-accent)] rounded-full" />
               </div>
               <ul className="flex flex-col gap-2.5 text-xs sm:text-sm">
                 <li>
-                  <Link href="/courses/quranic-qaidah" className="hover:text-[var(--color-accent)] transition-colors">
-                    Quranic Qaidah for Beginners
+                  <Link href="/blog" className="hover:text-[var(--color-accent)] transition-colors">
+                    All Learning Guides
                   </Link>
                 </li>
                 <li>
-                  <Link href="/courses/beautiful-quran-recitation-course" className="hover:text-[var(--color-accent)] transition-colors">
-                    Beautiful Quran Recitation Course
+                  <Link href="/blog/how-to-learn-quran-online" className="hover:text-[var(--color-accent)] transition-colors">
+                    How to Learn Quran Online
                   </Link>
                 </li>
                 <li>
-                  <Link href="/courses/tajweed-course" className="hover:text-[var(--color-accent)] transition-colors">
-                    Tajweed Masterclass
+                  <Link href="/blog/why-learn-quran-with-tajweed" className="hover:text-[var(--color-accent)] transition-colors">
+                    Why Learn Quran with Tajweed
                   </Link>
                 </li>
                 <li>
-                  <Link href="/courses/quran-memorizing" className="hover:text-[var(--color-accent)] transition-colors">
-                    Quran Memorization (Hifz)
+                  <Link href="/blog/how-to-teach-quran-to-kids" className="hover:text-[var(--color-accent)] transition-colors">
+                    How to Teach Quran to Kids
                   </Link>
                 </li>
                 <li>
-                  <Link href="/courses/translation-holy-quran" className="hover:text-[var(--color-accent)] transition-colors">
-                    Translation of The Holy Quran
+                  <Link href="/blog/how-to-memorize-quran-fast" className="hover:text-[var(--color-accent)] transition-colors">
+                    How to Memorize Quran (Hifz)
                   </Link>
                 </li>
                 <li>
-                  <Link href="/courses/women-quranic-course" className="hover:text-[var(--color-accent)] transition-colors">
-                    Women Quranic Course
+                  <Link href="/blog/what-is-noorani-qaida" className="hover:text-[var(--color-accent)] transition-colors">
+                    What is Noorani Qaida?
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/downloads" className="hover:text-[var(--color-accent)] transition-colors">
+                    Free PDF Downloads
                   </Link>
                 </li>
               </ul>
@@ -223,43 +228,44 @@ export default function Footer() {
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-1">
                 <h4 className="text-white font-bold text-sm uppercase tracking-wider">
-                  Contact Us
+                  Academy & Contact
                 </h4>
                 <div className="w-8 h-0.5 bg-[var(--color-accent)] rounded-full" />
               </div>
-              <ul className="flex flex-col gap-4">
+              <ul className="flex flex-col gap-3 text-xs sm:text-sm">
                 <li>
+                  <Link href="/about" className="hover:text-[var(--color-accent)] transition-colors">
+                    About Our Academy
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/faq" className="hover:text-[var(--color-accent)] transition-colors">
+                    Frequently Asked Questions
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/student-gallery" className="hover:text-[var(--color-accent)] transition-colors">
+                    Student Moments Gallery
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/contact" className="hover:text-[var(--color-accent)] transition-colors">
+                    Contact Academic Coordinator
+                  </Link>
+                </li>
+                <li className="pt-2">
                   <a
                     href="https://wa.me/923274816872"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex items-start gap-3 text-gray-400 text-xs sm:text-sm hover:text-white transition-colors"
+                    className="group flex items-start gap-2.5 text-gray-400 hover:text-white transition-colors"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center shrink-0 group-hover:border-[#25D366]/40 transition-colors">
-                      <MessageCircle className="w-4 h-4 text-[#25D366]" />
+                    <div className="w-7 h-7 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center shrink-0 group-hover:border-[#25D366]/40 transition-colors">
+                      <MessageCircle className="w-3.5 h-3.5 text-[#25D366]" />
                     </div>
                     <div>
-                      <p className="text-gray-500 text-[10px] uppercase tracking-wider mb-0.5">
-                        WhatsApp
-                      </p>
-                      <p className="font-semibold text-white">+92 327 4816872</p>
-                    </div>
-                  </a>
-                </li>
-
-                <li>
-                  <a
-                    href="mailto:info@altanzeelquranacademy.com"
-                    className="group flex items-start gap-3 text-gray-400 text-xs sm:text-sm hover:text-white transition-colors"
-                  >
-                    <div className="w-8 h-8 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center shrink-0 group-hover:border-[var(--color-sky)]/40 transition-colors">
-                      <Mail className="w-4 h-4 text-[var(--color-accent)]" />
-                    </div>
-                    <div>
-                      <p className="text-gray-500 text-[10px] uppercase tracking-wider mb-0.5">
-                        Email
-                      </p>
-                      <p className="font-semibold text-white">info@altanzeelquranacademy.com</p>
+                      <p className="text-gray-500 text-[10px] uppercase tracking-wider">WhatsApp 24/7</p>
+                      <p className="font-semibold text-white text-xs">+92 327 4816872</p>
                     </div>
                   </a>
                 </li>
@@ -270,7 +276,7 @@ export default function Footer() {
           {/* Bottom Copyright */}
           <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500">
             <p>© {new Date().getFullYear()} Al Tanzeel Quran Academy. All rights reserved.</p>
-            <p className="text-gray-500">Dedicated to Authentic Quranic Learning Worldwide</p>
+            <p className="text-gray-500">Dedicated to Authentic Quranic Education Worldwide</p>
           </div>
         </div>
       </footer>
