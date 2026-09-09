@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { usePathname } from "next/navigation";
 
 export const WhatsAppIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
   <svg className={className} fill="currentColor" viewBox="0 0 24 24">
@@ -9,6 +10,10 @@ export const WhatsAppIcon = ({ className = "w-5 h-5" }: { className?: string }) 
 );
 
 export default function FloatingContact() {
+  const pathname = usePathname();
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
       {/* Official WhatsApp Action */}

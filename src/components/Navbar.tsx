@@ -14,20 +14,22 @@ import { WhatsAppIcon } from "./FloatingContact";
 
 const navLinks = [
   { name: "Home", href: "/" },
-  { name: "Classes", href: "/online-quran-classes" },
-  { name: "Teachers", href: "/online-quran-teacher" },
-  { name: "Kids", href: "/quran-classes-for-kids" },
-  { name: "Courses", href: "/courses" },
-  { name: "Guides", href: "/blog" },
-  { name: "Downloads", href: "/downloads" },
   { name: "About", href: "/about" },
+  { name: "Courses", href: "/courses" },
+  { name: "Downloads", href: "/downloads" },
+  { name: "Student Gallery", href: "/student-gallery" },
   { name: "Contact", href: "/contact" },
+  { name: "FAQs", href: "/faq" },
 ];
 
 export default function Navbar() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
 
   return (
     <>
@@ -69,7 +71,7 @@ export default function Navbar() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3 group" title="Al Tanzeel Quran Academy Home">
-              <div className="relative w-44 sm:w-48 h-11 sm:h-12 flex items-center">
+              <div className="relative w-48 h-12 flex items-center">
                 <img
                   src="/tanzeel-top-logo.png"
                   alt="Al Tanzeel Quran Academy - Online Quran Academy & Tajweed Classes"
@@ -81,7 +83,7 @@ export default function Navbar() {
             </Link>
 
             {/* Desktop Navigation Links */}
-            <div className="hidden lg:flex items-center gap-1 xl:gap-2">
+            <div className="hidden md:flex items-center gap-1 lg:gap-2">
               {navLinks.map((link) => {
                 const isActive = pathname === link.href;
                 return (
@@ -89,7 +91,7 @@ export default function Navbar() {
                     key={link.name}
                     href={link.href}
                     title={link.name}
-                    className={`px-2.5 py-1.5 rounded-lg text-[11px] xl:text-xs font-bold uppercase tracking-wider transition-all ${
+                    className={`px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${
                       isActive
                         ? "bg-[var(--color-surface)] text-[var(--color-accent)] border border-[var(--color-accent)]/30"
                         : "text-gray-300 hover:text-white hover:bg-white/5"
@@ -102,10 +104,10 @@ export default function Navbar() {
             </div>
 
             {/* Desktop CTA Button */}
-            <div className="hidden lg:flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-3">
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="px-4 xl:px-5 py-2 xl:py-2.5 rounded-xl bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white text-xs font-bold uppercase tracking-wider shadow-[0_4px_20px_rgba(250,132,30,0.4)] transition-all hover:scale-105 active:scale-95"
+                className="px-5 py-2.5 rounded-xl bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white text-xs font-bold uppercase tracking-wider shadow-[0_4px_20px_rgba(250,132,30,0.4)] transition-all hover:scale-105 active:scale-95"
               >
                 Free Trial Class
               </button>
@@ -115,7 +117,7 @@ export default function Navbar() {
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle Mobile Menu"
-              className="lg:hidden p-2 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)] text-gray-300 hover:text-white focus:outline-none"
+              className="md:hidden p-2 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)] text-gray-300 hover:text-white focus:outline-none"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -124,7 +126,7 @@ export default function Navbar() {
 
         {/* Mobile Drawer Menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-[var(--color-black-soft)] border-b border-[var(--color-border)] px-4 pt-3 pb-6 flex flex-col gap-3 animate-fade-in shadow-2xl">
+          <div className="md:hidden bg-[var(--color-black-soft)] border-b border-[var(--color-border)] px-4 pt-3 pb-6 flex flex-col gap-3 animate-fade-in shadow-2xl">
             <div className="flex flex-col gap-1">
               {navLinks.map((link) => {
                 const isActive = pathname === link.href;

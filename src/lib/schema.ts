@@ -1,14 +1,12 @@
 import { Course } from "@/data/courses";
 import { DownloadItem } from "@/data/downloads";
 import { FAQItem } from "@/data/faqs";
-import { BlogPost } from "@/data/blog";
-import { Teacher } from "@/data/teachers";
 
 export const SITE_URL = "https://www.altanzeelquranacademy.com";
 export const ACADEMY_NAME = "Al Tanzeel Quran Academy";
 export const ACADEMY_LEGAL_NAME = "Al Tanzeel Quran Academy Online";
 export const ACADEMY_DESCRIPTION =
-  "Premier online Quran academy offering 1-on-1 personalized Quran classes with Tajweed, Quran Memorization (Hifz), Noorani Qaida, and Islamic Studies for children, adults, and sisters worldwide with certified male & female teachers.";
+  "Premier online Quran academy offering 1-on-1 personalized Quran classes with Tajweed, Quran Memorization (Hifz), Noorani Qaida, and Islamic Studies for children, adults, and sisters worldwide.";
 export const ACADEMY_PHONE = "+923274816872";
 export const ACADEMY_EMAIL = "info@altanzeelquranacademy.com";
 export const ACADEMY_LOGO = `${SITE_URL}/tanzeel-logo.png`;
@@ -117,12 +115,6 @@ export function getOrganizationSchema() {
     },
     knowsAbout: [
       "Online Quran Academy",
-      "Online Quran Teacher",
-      "Quran Teacher Online",
-      "Online Quran Tutor",
-      "Quran Classes Online",
-      "Learn Quran Online",
-      "Online Quran Classes for Kids",
       "Quran Recitation with Tajweed",
       "Tajweed Rules & 17 Makharij",
       "Quran Memorization (Hifz)",
@@ -246,34 +238,6 @@ export function getCourseCatalogSchema(courses: Course[]) {
 }
 
 /**
- * Generates Teachers ItemList Schema JSON-LD
- */
-export function getTeacherListSchema(teachers: Teacher[]) {
-  return {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: "Certified Online Quran Teachers & Islamic Scholars",
-    description: "Meet our certified male and female Quran teachers, Huffaz, and Ijazah holders.",
-    itemListElement: teachers.map((teacher, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      item: {
-        "@type": "Person",
-        name: teacher.name,
-        jobTitle: teacher.role,
-        description: teacher.bio,
-        knowsAbout: teacher.specialties,
-        knowsLanguage: teacher.languages,
-        worksFor: {
-          "@type": "EducationalOrganization",
-          name: ACADEMY_NAME,
-        },
-      },
-    })),
-  };
-}
-
-/**
  * Generates FAQPage Schema JSON-LD
  */
 export function getFAQPageSchema(faqs: FAQItem[]) {
@@ -310,41 +274,6 @@ export function getDigitalDocumentSchema(item: DownloadItem) {
     inLanguage: item.category.includes("English") ? "en" : "ar",
     isAccessibleForFree: true,
     image: item.image.startsWith("http") ? item.image : `${SITE_URL}${item.image}`,
-  };
-}
-
-/**
- * Generates Article / BlogPosting Schema JSON-LD
- */
-export function getArticleSchema(post: BlogPost) {
-  return {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    headline: post.title,
-    description: post.metaDescription,
-    image: post.image.startsWith("http") ? post.image : `${SITE_URL}${post.image}`,
-    author: {
-      "@type": "Person",
-      name: post.author.name,
-      jobTitle: post.author.role,
-    },
-    publisher: {
-      "@type": "EducationalOrganization",
-      name: ACADEMY_NAME,
-      logo: {
-        "@type": "ImageObject",
-        url: ACADEMY_LOGO,
-      },
-    },
-    datePublished: post.publishedAt,
-    dateModified: post.updatedAt,
-    mainEntityOfPage: {
-      "@type": "WebPage",
-      "@id": `${SITE_URL}/blog/${post.slug}`,
-    },
-    articleSection: post.category,
-    keywords: [post.targetKeyword, ...post.secondaryKeywords, ...post.tags].join(", "),
-    inLanguage: "en-US",
   };
 }
 
