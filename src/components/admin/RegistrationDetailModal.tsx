@@ -193,8 +193,34 @@ export default function RegistrationDetailModal({
             </div>
           </div>
 
+          {/* Age */}
+          {registration.age && (
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center text-amber-400 shrink-0">
+                <Calendar className="w-4 h-4" />
+              </div>
+              <div>
+                <p className="text-[10px] uppercase font-bold text-gray-400">Student Age</p>
+                <p className="text-amber-300 text-xs sm:text-sm font-semibold">{registration.age}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Gender */}
+          {registration.gender && (
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center text-purple-400 shrink-0">
+                <User className="w-4 h-4" />
+              </div>
+              <div>
+                <p className="text-[10px] uppercase font-bold text-gray-400">Gender</p>
+                <p className="text-purple-300 text-xs sm:text-sm font-semibold">{registration.gender}</p>
+              </div>
+            </div>
+          )}
+
           {/* Preferred Time */}
-          <div className="flex items-center gap-3 sm:col-span-2">
+          <div className={`flex items-center gap-3 ${!registration.age && !registration.gender ? "sm:col-span-2" : ""}`}>
             <div className="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center text-sky-400 shrink-0">
               <Clock className="w-4 h-4" />
             </div>
@@ -206,6 +232,19 @@ export default function RegistrationDetailModal({
             </div>
           </div>
         </div>
+
+        {/* Student Message / Special Request */}
+        {registration.message && (
+          <div className="bg-amber-500/10 border border-amber-500/25 rounded-2xl p-3.5 my-2">
+            <p className="text-[10px] uppercase font-bold text-amber-400 tracking-wider mb-1 flex items-center gap-1.5">
+              <MessageCircle className="w-3.5 h-3.5" />
+              <span>Student Message / Special Request</span>
+            </p>
+            <p className="text-gray-200 text-xs sm:text-sm leading-relaxed whitespace-pre-wrap">
+              {registration.message}
+            </p>
+          </div>
+        )}
 
         {/* Status & Notes Management Section */}
         <div className="flex flex-col gap-4 mt-5 pt-4 border-t border-white/10">

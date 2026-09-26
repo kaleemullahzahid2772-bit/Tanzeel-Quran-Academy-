@@ -215,7 +215,9 @@ export default function AdminDashboardPage() {
         r.phone?.toLowerCase().includes(q) ||
         r.email?.toLowerCase().includes(q) ||
         r.country?.toLowerCase().includes(q) ||
-        r.course?.toLowerCase().includes(q);
+        r.course?.toLowerCase().includes(q) ||
+        r.age?.toLowerCase().includes(q) ||
+        r.gender?.toLowerCase().includes(q);
 
       // Status Match
       const currentStatus = r.status || "New";
@@ -565,7 +567,14 @@ export default function AdminDashboardPage() {
                               <div className="w-8 h-8 rounded-full bg-[var(--color-accent)]/15 border border-[var(--color-accent)]/30 text-[var(--color-accent)] flex items-center justify-center font-bold text-xs shrink-0">
                                 {reg.full_name?.charAt(0)?.toUpperCase() || "S"}
                               </div>
-                              <span className="truncate max-w-[160px]">{reg.full_name}</span>
+                              <div className="flex flex-col min-w-0">
+                                <span className="truncate max-w-[160px]">{reg.full_name}</span>
+                                {(reg.gender || reg.age) && (
+                                  <span className="text-[10px] text-gray-400 font-normal truncate max-w-[160px]">
+                                    {reg.gender}{reg.gender && reg.age ? " • " : ""}{reg.age ? `Age: ${reg.age}` : ""}
+                                  </span>
+                                )}
+                              </div>
                             </div>
                           </td>
 
@@ -685,9 +694,17 @@ export default function AdminDashboardPage() {
                             {reg.full_name}
                           </h3>
                         </div>
-                        <p className="text-[11px] text-gray-400 mt-0.5 flex items-center gap-1">
-                          <Globe className="w-3 h-3 text-gray-500" />
+                        <p className="text-[11px] text-gray-400 mt-0.5 flex items-center flex-wrap gap-1">
+                          <Globe className="w-3 h-3 text-gray-500 shrink-0" />
                           <span>{reg.country}</span>
+                          {(reg.gender || reg.age) && (
+                            <>
+                              <span className="text-gray-600">•</span>
+                              <span className="text-amber-300 font-medium">
+                                {reg.gender}{reg.gender && reg.age ? ", " : ""}{reg.age ? `Age: ${reg.age}` : ""}
+                              </span>
+                            </>
+                          )}
                           <span className="text-gray-600">•</span>
                           <span>{formattedDate}</span>
                         </p>

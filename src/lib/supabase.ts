@@ -6,11 +6,11 @@ if (rawUrl && !rawUrl.startsWith("http://") && !rawUrl.startsWith("https://")) {
 }
 
 const supabaseUrl =
-  rawUrl || "https://izzdvkmoycjufucjqkix.supabase.co";
+  rawUrl || "https://urudsmdtjsbferdbsdgz.supabase.co";
 const supabaseAnonKey =
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-  "sb_publishable_3gfw0kGd4APVh9Gsnhd_eQ_NJHZBLNw";
+  "sb_publishable_AUb4aJeEfQad5FgmT75BVg_HQvsDLhm";
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 

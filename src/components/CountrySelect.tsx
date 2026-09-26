@@ -48,7 +48,7 @@ export default function CountrySelect({ value, onChange, required = false }: Cou
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full bg-black border border-white/15 focus:border-[var(--color-accent)] text-white text-xs sm:text-sm rounded-xl pl-3.5 pr-4 py-3 flex items-center justify-between gap-2.5 outline-none transition-colors cursor-pointer text-left shadow-inner"
+        className="w-full bg-black border border-white/15 focus:border-[var(--color-accent)] text-white text-sm rounded-xl pl-3.5 pr-4 py-3 flex items-center justify-between gap-2.5 outline-none transition-colors cursor-pointer text-left shadow-inner h-[46px]"
       >
         <div className="flex items-center gap-2.5 truncate">
           <img

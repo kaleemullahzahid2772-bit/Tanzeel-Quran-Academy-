@@ -13,6 +13,9 @@ export interface TrialRegistration {
   country: string;
   course: string;
   preferred_time: string;
+  age?: string;
+  gender?: string;
+  message?: string;
   created_at: string;
   status?: RegistrationStatus | string;
   notes?: string;

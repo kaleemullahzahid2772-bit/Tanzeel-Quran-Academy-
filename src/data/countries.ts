@@ -4,6 +4,7 @@ export interface CountryData {
 }
 
 export const countriesData: CountryData[] = [
+  { name: "Maldives", code: "mv" },
   { name: "United States", code: "us" },
   { name: "United Kingdom", code: "gb" },
   { name: "Canada", code: "ca" },
@@ -110,7 +111,6 @@ export const countriesData: CountryData[] = [
   { name: "Madagascar", code: "mg" },
   { name: "Malawi", code: "mw" },
   { name: "Malaysia", code: "my" },
-  { name: "Maldives", code: "mv" },
   { name: "Mali", code: "ml" },
   { name: "Malta", code: "mt" },
   { name: "Mauritania", code: "mr" },
