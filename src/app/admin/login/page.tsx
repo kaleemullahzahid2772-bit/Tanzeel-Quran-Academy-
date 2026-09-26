@@ -14,6 +14,7 @@ import {
   ShieldCheck,
   ArrowLeft,
   Sparkles,
+  User,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
@@ -49,18 +50,37 @@ export default function AdminLoginPage() {
     if (loading) return;
 
     if (!email.trim() || !password) {
-      setErrorMsg("Please enter both email address and password.");
+      setErrorMsg("Please enter both username/email and password.");
       return;
     }
 
     setLoading(true);
     setErrorMsg(null);
 
+    // Support both username (e.g. "Altanzeel Kaleem") and standard email
+    let targetEmail = email.trim();
+    if (!targetEmail.includes("@")) {
+      const clean = targetEmail.toLowerCase().replace(/\s+/g, "");
+      targetEmail = `${clean}@altanzeel.com`;
+    }
+
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
+      let { data, error } = await supabase.auth.signInWithPassword({
+        email: targetEmail,
         password: password,
       });
+
+      // Fallback try for altanzeelkaleem@altanzeel.com if username format had variations
+      if (error && !email.trim().includes("@")) {
+        const retry1 = await supabase.auth.signInWithPassword({
+          email: "altanzeelkaleem@altanzeel.com",
+          password: password,
+        });
+        if (!retry1.error && retry1.data?.session) {
+          data = retry1.data;
+          error = null;
+        }
+      }
 
       if (error) {
         if (
@@ -142,22 +162,22 @@ export default function AdminLoginPage() {
 
         {/* Login Form */}
         <form onSubmit={handleLogin} className="flex flex-col gap-5">
-          {/* Email Address */}
+          {/* Username / Email */}
           <div>
             <label className="block text-gray-300 text-[11px] font-bold uppercase tracking-wider mb-1.5">
-              Admin Email
+              Admin Username or Email
             </label>
             <div className="relative">
-              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
-                type="email"
+                type="text"
                 required
-                autoComplete="email"
+                autoComplete="username"
                 disabled={loading}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@altanzeelquranacademy.com"
-                className="w-full bg-[#060a0e] border border-white/15 focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] text-white text-xs sm:text-sm rounded-xl pl-10 pr-4 py-3 outline-none transition-all disabled:opacity-50 placeholder:text-gray-600 shadow-inner"
+                placeholder="Altanzeel Kaleem"
+                className="w-full bg-[#060a0e] border border-white/15 focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] text-white text-xs sm:text-sm rounded-xl pl-10 pr-4 py-3 outline-none transition-all disabled:opacity-50 placeholder:text-gray-500 shadow-inner"
               />
             </div>
           </div>
