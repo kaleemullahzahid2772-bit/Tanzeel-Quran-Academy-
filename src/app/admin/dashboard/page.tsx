@@ -28,6 +28,12 @@ import {
   Sun,
   Moon,
   MessageCircle,
+  Bell,
+  BellRing,
+  BellOff,
+  Volume2,
+  VolumeX,
+  X,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { TrialRegistration, RegistrationStatus, DashboardStats } from "@/types/admin";
@@ -69,6 +75,158 @@ export default function AdminDashboardPage() {
   // Detail Modal State
   const [selectedReg, setSelectedReg] = useState<TrialRegistration | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Mobile Push & Sound Alert State
+  const [notificationPermission, setNotificationPermission] = useState<NotificationPermission | "unsupported">("default");
+  const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
+  const [newAlertRecord, setNewAlertRecord] = useState<TrialRegistration | null>(null);
+  const [showNotificationMenu, setShowNotificationMenu] = useState(false);
+  const knownIdsRef = React.useRef<Set<string | number>>(new Set());
+  const initialLoadDoneRef = React.useRef(false);
+
+  // Load sound setting and initial notification permission
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if ("Notification" in window) {
+        setNotificationPermission(Notification.permission);
+      } else {
+        setNotificationPermission("unsupported");
+      }
+      const savedSound = localStorage.getItem("altanzeel_sound_enabled");
+      if (savedSound !== null) {
+        setSoundEnabled(savedSound === "true");
+      }
+    }
+  }, []);
+
+  // Web Audio Melodic Chime Generator (Works on Mobile & Desktop without external asset files)
+  const playAlertChime = useCallback(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const now = ctx.currentTime;
+
+      // Note 1: E5 (659.25 Hz)
+      const osc1 = ctx.createOscillator();
+      const gain1 = ctx.createGain();
+      osc1.type = "sine";
+      osc1.frequency.setValueAtTime(659.25, now);
+      gain1.gain.setValueAtTime(0, now);
+      gain1.gain.linearRampToValueAtTime(0.3, now + 0.05);
+      gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+      osc1.connect(gain1);
+      gain1.connect(ctx.destination);
+      osc1.start(now);
+      osc1.stop(now + 0.35);
+
+      // Note 2: A5 (880 Hz)
+      const osc2 = ctx.createOscillator();
+      const gain2 = ctx.createGain();
+      osc2.type = "sine";
+      osc2.frequency.setValueAtTime(880, now + 0.15);
+      gain2.gain.setValueAtTime(0, now + 0.15);
+      gain2.gain.linearRampToValueAtTime(0.35, now + 0.2);
+      gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
+      osc2.connect(gain2);
+      gain2.connect(ctx.destination);
+      osc2.start(now + 0.15);
+      osc2.stop(now + 0.7);
+    } catch (err) {
+      console.warn("Audio chime error:", err);
+    }
+  }, []);
+
+  // Trigger sound, vibration and system notification
+  const triggerNotification = useCallback((reg: TrialRegistration) => {
+    // 1. Play chime if sound enabled
+    if (soundEnabled) {
+      playAlertChime();
+    }
+
+    // 2. Physical Mobile Phone Vibration
+    if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+      try {
+        navigator.vibrate([200, 100, 200, 100, 300]);
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    // 3. System Push Notification
+    if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
+      try {
+        const title = `🔔 New Registration: ${reg.full_name || "New Student"}`;
+        const body = `Course: ${reg.course || "Quran"} | ${reg.country || "Online"} | Phone: ${reg.phone || ""}`;
+        const n = new Notification(title, {
+          body,
+          icon: "/tanzeel-logo.png",
+          badge: "/tanzeel-logo.png",
+          tag: `trial-reg-${reg.id}`,
+        } as any);
+
+        n.onclick = () => {
+          window.focus();
+          setSelectedReg(reg);
+          setIsModalOpen(true);
+          n.close();
+        };
+      } catch (err) {
+        console.warn("Notification trigger error:", err);
+      }
+    }
+
+    // 4. In-App Floating Toast Banner
+    setNewAlertRecord(reg);
+  }, [playAlertChime, soundEnabled]);
+
+  // Handle incoming new registration
+  const handleIncomingRegistration = useCallback((newRecord: TrialRegistration) => {
+    if (!newRecord?.id) return;
+    if (knownIdsRef.current.has(newRecord.id)) return;
+    knownIdsRef.current.add(newRecord.id);
+
+    setRegistrations((prev) => [newRecord, ...prev.filter((r) => r.id !== newRecord.id)]);
+    triggerNotification(newRecord);
+  }, [triggerNotification]);
+
+  // Request Notification Permission
+  const requestNotificationPermission = async () => {
+    if (typeof window === "undefined" || !("Notification" in window)) {
+      alert("Push notifications are not supported in this browser.");
+      return;
+    }
+    try {
+      const perm = await Notification.requestPermission();
+      setNotificationPermission(perm);
+      if (perm === "granted") {
+        playAlertChime();
+        if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+          navigator.vibrate([200, 100, 200]);
+        }
+        new Notification("🔔 Al Tanzeel Notifications Active!", {
+          body: "You will now receive instant sound & vibration alerts on new registrations.",
+          icon: "/tanzeel-logo.png",
+        });
+      }
+    } catch (err) {
+      console.error("Permission request error:", err);
+    }
+  };
+
+  const testAlert = () => {
+    playAlertChime();
+    if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+      navigator.vibrate([200, 100, 200]);
+    }
+    if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
+      new Notification("🔔 Test Alert: Al Tanzeel Quran Academy", {
+        body: "Your notifications, sound, and vibration alerts are active!",
+        icon: "/tanzeel-logo.png",
+      });
+    }
+  };
 
   // 1. Session verification
   useEffect(() => {
@@ -119,7 +277,12 @@ export default function AdminDashboardPage() {
         console.error("Supabase fetch error:", error);
         setDataError(error.message || "Failed to load registrations from database.");
       } else {
-        setRegistrations((data as TrialRegistration[]) || []);
+        const list = (data as TrialRegistration[]) || [];
+        setRegistrations(list);
+        if (!initialLoadDoneRef.current) {
+          list.forEach((r) => knownIdsRef.current.add(r.id));
+          initialLoadDoneRef.current = true;
+        }
       }
     } catch (err: any) {
       console.error("Fetch exception:", err);
@@ -134,6 +297,55 @@ export default function AdminDashboardPage() {
       fetchRegistrations();
     }
   }, [checkingAuth, fetchRegistrations]);
+
+  // Realtime Supabase listener & Polling fallback
+  useEffect(() => {
+    if (checkingAuth) return;
+
+    // 1. Supabase Realtime channel
+    const channel = supabase
+      .channel("admin-realtime-trial-registrations")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "trial_class_requests",
+        },
+        (payload) => {
+          if (payload.new) {
+            handleIncomingRegistration(payload.new as TrialRegistration);
+          }
+        }
+      )
+      .subscribe();
+
+    // 2. Periodic background check every 15s (polling fallback)
+    const interval = setInterval(async () => {
+      try {
+        const { data } = await supabase
+          .from("trial_class_requests")
+          .select("*")
+          .order("created_at", { ascending: false })
+          .limit(10);
+
+        if (data && initialLoadDoneRef.current) {
+          data.forEach((item) => {
+            if (!knownIdsRef.current.has(item.id)) {
+              handleIncomingRegistration(item as TrialRegistration);
+            }
+          });
+        }
+      } catch (err) {
+        // silent catch
+      }
+    }, 15000);
+
+    return () => {
+      supabase.removeChannel(channel);
+      clearInterval(interval);
+    };
+  }, [checkingAuth, handleIncomingRegistration]);
 
   // 3. Logout
   const handleLogout = async () => {
@@ -357,6 +569,113 @@ export default function AdminDashboardPage() {
         </div>
 
         <div className="flex items-center gap-1.5 sm:gap-2.5">
+          {/* Mobile / Browser Alerts Toggle & Status */}
+          <div className="relative">
+            <button
+              onClick={() => {
+                if (notificationPermission !== "granted") {
+                  requestNotificationPermission();
+                } else {
+                  setShowNotificationMenu((prev) => !prev);
+                }
+              }}
+              title={
+                notificationPermission === "granted"
+                  ? "Alerts Active (Click for Alert Options)"
+                  : "Tap to Enable Mobile Registration Alerts"
+              }
+              aria-label="Notification Alerts"
+              className={`p-2 sm:px-3 sm:py-2 flex items-center gap-1.5 rounded-xl border text-xs font-bold transition-all relative ${
+                notificationPermission === "granted"
+                  ? isLight
+                    ? "bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-300"
+                    : "bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border-emerald-500/30"
+                  : notificationPermission === "denied"
+                  ? isLight
+                    ? "bg-rose-50 text-rose-600 border-rose-200"
+                    : "bg-rose-500/10 text-rose-400 border-rose-500/20"
+                  : isLight
+                  ? "bg-amber-50 hover:bg-amber-100 text-amber-700 border-amber-300 animate-pulse"
+                  : "bg-amber-500/15 hover:bg-amber-500/25 text-amber-400 border-amber-500/30 animate-pulse"
+              }`}
+            >
+              {notificationPermission === "granted" ? (
+                <>
+                  <BellRing className="w-4 h-4 text-emerald-500" />
+                  <span className="hidden lg:inline font-semibold">Alerts On</span>
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping absolute top-1 right-1" />
+                </>
+              ) : notificationPermission === "denied" ? (
+                <>
+                  <BellOff className="w-4 h-4 text-rose-500" />
+                  <span className="hidden lg:inline text-rose-500 font-semibold">Alerts Blocked</span>
+                </>
+              ) : (
+                <>
+                  <Bell className="w-4 h-4 text-amber-500" />
+                  <span className="hidden lg:inline font-bold">Enable Alerts</span>
+                </>
+              )}
+            </button>
+
+            {/* Dropdown Menu when clicked if granted */}
+            {showNotificationMenu && (
+              <div
+                className={`absolute right-0 mt-2 w-64 rounded-2xl shadow-2xl border p-3 z-50 animate-fade-in ${
+                  isLight
+                    ? "bg-white text-slate-800 border-slate-200"
+                    : "bg-[#18232c] text-white border-white/15"
+                }`}
+              >
+                <div className="flex items-center justify-between border-b pb-2 mb-2 border-inherit">
+                  <span className="text-xs font-bold">Notification Settings</span>
+                  <button
+                    onClick={() => setShowNotificationMenu(false)}
+                    className="p-1 rounded hover:opacity-70 text-gray-400 hover:text-white"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  <button
+                    onClick={() => {
+                      const next = !soundEnabled;
+                      setSoundEnabled(next);
+                      localStorage.setItem("altanzeel_sound_enabled", String(next));
+                    }}
+                    className={`w-full flex items-center justify-between p-2 rounded-xl border transition ${
+                      isLight ? "bg-slate-50 border-slate-200 hover:bg-slate-100" : "bg-white/5 border-white/10 hover:bg-white/10"
+                    }`}
+                  >
+                    <span className="flex items-center gap-2">
+                      {soundEnabled ? (
+                        <Volume2 className="w-4 h-4 text-emerald-500" />
+                      ) : (
+                        <VolumeX className="w-4 h-4 text-gray-400" />
+                      )}
+                      <span>Sound Alert</span>
+                    </span>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${soundEnabled ? "bg-emerald-500/20 text-emerald-400" : "bg-gray-500/20 text-gray-400"}`}>
+                      {soundEnabled ? "ON" : "OFF"}
+                    </span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      testAlert();
+                      setShowNotificationMenu(false);
+                    }}
+                    className="w-full flex items-center justify-center gap-1.5 p-2 rounded-xl bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white font-bold transition shadow"
+                  >
+                    <BellRing className="w-3.5 h-3.5" />
+                    <span>Send Test Alert</span>
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* Theme Toggle Button (Dark / Light) */}
           <button
             onClick={toggleTheme}
@@ -423,7 +742,41 @@ export default function AdminDashboardPage() {
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6 lg:p-8 flex flex-col gap-4 sm:gap-6">
+      <main className="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6 lg:p-8 flex flex-col gap-4 sm:gap-6 relative">
+        {/* Real-time Floating Toast for Incoming Registration */}
+        {newAlertRecord && (
+          <div className="fixed top-4 left-4 right-4 md:left-auto md:right-8 z-50 max-w-md bg-gradient-to-r from-amber-600 via-[var(--color-accent)] to-amber-700 text-white p-4 rounded-2xl shadow-2xl border border-white/20 animate-fade-in flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="p-2.5 bg-black/30 rounded-xl shrink-0">
+                <BellRing className="w-5 h-5 text-amber-200 animate-pulse" />
+              </div>
+              <div className="min-w-0 text-xs">
+                <p className="font-extrabold text-sm truncate">New Registration Received!</p>
+                <p className="opacity-95 truncate font-medium">{newAlertRecord.full_name} • {newAlertRecord.course}</p>
+                <p className="text-[11px] opacity-80">{newAlertRecord.country} • {newAlertRecord.phone}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <button
+                onClick={() => {
+                  setSelectedReg(newAlertRecord);
+                  setIsModalOpen(true);
+                  setNewAlertRecord(null);
+                }}
+                className="px-3 py-1.5 bg-white text-slate-900 font-bold rounded-lg text-xs hover:bg-slate-100 transition shadow cursor-pointer"
+              >
+                View
+              </button>
+              <button
+                onClick={() => setNewAlertRecord(null)}
+                className="p-1.5 hover:bg-white/20 rounded-lg text-white/80 hover:text-white transition cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Welcome & Overview Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
@@ -441,6 +794,32 @@ export default function AdminDashboardPage() {
             <span>Updated: Just now</span>
           </div>
         </div>
+
+        {/* Enable Notifications Callout Banner */}
+        {notificationPermission !== "granted" && notificationPermission !== "unsupported" && (
+          <div className={`rounded-2xl p-3.5 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border shadow-sm ${
+            isLight ? "bg-amber-50 border-amber-200 text-amber-950" : "bg-amber-500/10 border-amber-500/30 text-amber-200"
+          }`}>
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-amber-500/20 text-amber-500 shrink-0">
+                <Bell className="w-5 h-5 animate-bounce" />
+              </div>
+              <div className="text-xs">
+                <p className="font-bold text-sm">Enable Mobile &amp; Desktop Registration Alerts</p>
+                <p className="opacity-90">
+                  Tap to get instant sound, vibration, and push notifications on your phone whenever a student submits a registration!
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={requestNotificationPermission}
+              className="px-4 py-2 bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white font-bold rounded-xl text-xs transition shadow-md shrink-0 cursor-pointer flex items-center gap-1.5"
+            >
+              <BellRing className="w-4 h-4" />
+              <span>Turn On Alerts</span>
+            </button>
+          </div>
+        )}
 
         {/* Database Migration Warning if applicable */}
         {dataError && (

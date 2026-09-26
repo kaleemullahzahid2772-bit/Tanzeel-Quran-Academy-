@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import html2canvas from "html2canvas";
 import {
   X,
   CheckCircle2,
@@ -41,8 +42,10 @@ export default function TrialClassModal({ isOpen, onClose }: TrialClassModalProp
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [submittedData, setSubmittedData] = useState<any>(null);
   const [registrationNumber, setRegistrationNumber] = useState<string>("");
+  const [registeredAt, setRegisteredAt] = useState<string>("");
   const [copied, setCopied] = useState(false);
   const [downloadingImage, setDownloadingImage] = useState(false);
+  const slipCardRef = useRef<HTMLDivElement>(null);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -293,7 +296,7 @@ export default function TrialClassModal({ isOpen, onClose }: TrialClassModalProp
               <tr><th>Course Selected</th><td>${sCourse}</td></tr>
               <tr><th>Preferred Time</th><td>${sTime}</td></tr>
               ${sMsg ? `<tr><th>Additional Note</th><td>${sMsg}</td></tr>` : ''}
-              <tr><th>Registered On</th><td>${new Date().toLocaleString()}</td></tr>
+              <tr><th>Registered On</th><td>${registeredAt || new Date().toLocaleString()}</td></tr>
               <tr><th>Status</th><td><span style="color:#047857;font-weight:bold;">Confirmed (Teacher Assignment in Progress)</span></td></tr>
             </table>
 
@@ -323,268 +326,34 @@ export default function TrialClassModal({ isOpen, onClose }: TrialClassModalProp
     }, 450);
   };
 
-  const handleDownloadImageSlip = () => {
-    if (downloadingImage) return;
+  const handleDownloadImageSlip = async () => {
+    if (downloadingImage || !slipCardRef.current) return;
     setDownloadingImage(true);
 
-    const sName = submittedData?.name || formData.name;
-    const sGender = submittedData?.gender || formData.gender;
-    const sAge = submittedData?.age || formData.age;
-    const sCountry = submittedData?.country || formData.country;
-    const sPhone = submittedData?.phone || formData.phone;
-    const sEmail = submittedData?.email || formData.email;
-    const sCourse = submittedData?.course || formData.course;
-    const sTime = submittedData?.preferredTime || formData.preferredTime;
-    const sMsg = submittedData?.message || formData.message;
+    try {
+      // Ensure element styles and images are fully settled
+      await new Promise((resolve) => setTimeout(resolve, 150));
 
-    const canvas = document.createElement("canvas");
-    const width = 1000;
-    const height = sMsg ? 1440 : 1340;
-    canvas.width = width;
-    canvas.height = height;
-    const ctx = canvas.getContext("2d");
+      const canvas = await html2canvas(slipCardRef.current, {
+        scale: 2.5, // Ultra sharp high resolution
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: "#ffffff",
+        logging: false,
+      });
 
-    if (!ctx) {
+      const dataUrl = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.href = dataUrl;
+      link.download = `AlTanzeel-Registration-${registrationNumber || "Slip"}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err) {
+      console.error("Canvas image generation error:", err);
+    } finally {
       setDownloadingImage(false);
-      return;
     }
-
-    const drawRoundedRect = (
-      c: CanvasRenderingContext2D,
-      x: number,
-      y: number,
-      w: number,
-      h: number,
-      r: number
-    ) => {
-      if (typeof c.roundRect === "function") {
-        c.roundRect(x, y, w, h, r);
-      } else {
-        c.rect(x, y, w, h);
-      }
-    };
-
-    const renderSlip = (logoImg?: HTMLImageElement) => {
-      try {
-        // 1. White Background
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, width, height);
-
-        // Outer Border
-        ctx.strokeStyle = "#e2e8f0";
-        ctx.lineWidth = 3;
-        ctx.strokeRect(16, 16, width - 32, height - 32);
-
-        // Top Gradient Accent Bar
-        const gradient = ctx.createLinearGradient(16, 16, width - 16, 26);
-        gradient.addColorStop(0, "#fa841e");
-        gradient.addColorStop(0.5, "#f59e0b");
-        gradient.addColorStop(1, "#0ea5e9");
-        ctx.fillStyle = gradient;
-        ctx.fillRect(16, 16, width - 32, 10);
-
-        // 2. Center Middle Watermark Logo (with subtle transparency ~ 0.08)
-        if (logoImg && logoImg.complete && logoImg.naturalWidth > 0) {
-          ctx.save();
-          ctx.globalAlpha = 0.08;
-          const wmSize = 280;
-          ctx.drawImage(logoImg, (width - wmSize) / 2, 590, wmSize, wmSize);
-          ctx.restore();
-        }
-
-        // 3. Header Top Logo
-        let currentY = 56;
-        if (logoImg && logoImg.complete && logoImg.naturalWidth > 0) {
-          const topLogoSize = 85;
-          ctx.drawImage(logoImg, (width - topLogoSize) / 2, currentY, topLogoSize, topLogoSize);
-          currentY += topLogoSize + 16;
-        } else {
-          currentY += 20;
-        }
-
-        // 4. Academy Title & Subtitle
-        ctx.fillStyle = "#fa841e";
-        ctx.font = "900 30px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-        ctx.textAlign = "center";
-        ctx.fillText("Al Tanzeel Quran Academy", width / 2, currentY);
-        currentY += 26;
-
-        ctx.fillStyle = "#64748b";
-        ctx.font = "600 13px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-        ctx.fillText("ONLINE QURAN & ISLAMIC STUDIES WORLDWIDE", width / 2, currentY);
-        currentY += 28;
-
-        // Confirmation Badge
-        const badgeText = "OFFICIAL FREE TRIAL CLASS CONFIRMATION SLIP";
-        ctx.font = "700 12px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-        const badgeWidth = ctx.measureText(badgeText).width + 32;
-        ctx.fillStyle = "#ecfdf5";
-        ctx.beginPath();
-        drawRoundedRect(ctx, (width - badgeWidth) / 2, currentY - 16, badgeWidth, 26, 13);
-        ctx.fill();
-        ctx.strokeStyle = "#10b981";
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-
-        ctx.fillStyle = "#047857";
-        ctx.fillText(badgeText, width / 2, currentY + 2);
-        currentY += 38;
-
-        // Divider
-        ctx.strokeStyle = "#e2e8f0";
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.moveTo(50, currentY);
-        ctx.lineTo(width - 50, currentY);
-        ctx.stroke();
-        currentY += 24;
-
-        // 5. Official Registration Number Card
-        const regBoxWidth = 520;
-        const regBoxHeight = 74;
-        const regBoxX = (width - regBoxWidth) / 2;
-        ctx.fillStyle = "#f8fafc";
-        ctx.beginPath();
-        drawRoundedRect(ctx, regBoxX, currentY, regBoxWidth, regBoxHeight, 14);
-        ctx.fill();
-        ctx.strokeStyle = "#cbd5e1";
-        if (typeof ctx.setLineDash === "function") {
-          ctx.setLineDash([6, 4]);
-        }
-        ctx.stroke();
-        if (typeof ctx.setLineDash === "function") {
-          ctx.setLineDash([]);
-        }
-
-        ctx.fillStyle = "#64748b";
-        ctx.font = "700 12px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-        ctx.fillText("OFFICIAL REGISTRATION NUMBER", width / 2, currentY + 24);
-
-        ctx.fillStyle = "#fa841e";
-        ctx.font = "900 28px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-        ctx.fillText(registrationNumber, width / 2, currentY + 56);
-        currentY += regBoxHeight + 30;
-
-        // 6. Student Data Table
-        const tableX = 60;
-        const tableW = width - 120;
-        interface SlipRow {
-          label: string;
-          value: string;
-          color?: string;
-        }
-
-        const rows: SlipRow[] = [
-          { label: "Student Name", value: sName },
-          { label: "Gender", value: sGender },
-          { label: "Student Age", value: sAge ? `${sAge} Years` : "Not specified" },
-          { label: "Country", value: sCountry },
-          { label: "WhatsApp / Phone", value: sPhone, color: "#16a34a" },
-          { label: "Email Address", value: sEmail },
-          { label: "Course Selected", value: sCourse, color: "#fa841e" },
-          { label: "Preferred Class Time", value: sTime, color: "#0284c7" },
-          ...(sMsg ? [{ label: "Student Special Request", value: sMsg }] : []),
-          { label: "Registered On", value: new Date().toLocaleString() },
-          { label: "Enrollment Status", value: "Confirmed (Teacher Assignment in Progress)", color: "#047857" },
-        ];
-
-        const rowHeight = 44;
-        rows.forEach((row, i) => {
-          const rowY = currentY + i * rowHeight;
-
-          // Alternate row background
-          if (i % 2 === 0) {
-            ctx.fillStyle = "#f8fafc";
-            ctx.beginPath();
-            drawRoundedRect(ctx, tableX, rowY, tableW, rowHeight, 6);
-            ctx.fill();
-          }
-
-          // Divider
-          ctx.strokeStyle = "#edf2f7";
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(tableX, rowY + rowHeight);
-          ctx.lineTo(tableX + tableW, rowY + rowHeight);
-          ctx.stroke();
-
-          // Left Label
-          ctx.textAlign = "left";
-          ctx.fillStyle = "#64748b";
-          ctx.font = "600 13px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-          ctx.fillText(row.label.toUpperCase(), tableX + 18, rowY + 27);
-
-          // Right Value
-          ctx.textAlign = "right";
-          ctx.fillStyle = row.color || "#0f172a";
-          ctx.font = "700 14px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-          const val = row.value.length > 48 ? row.value.slice(0, 45) + "..." : row.value;
-          ctx.fillText(val, tableX + tableW - 18, rowY + 27);
-        });
-
-        currentY += rows.length * rowHeight + 25;
-
-        // 7. Footer Box
-        const footerX = 60;
-        const footerW = width - 120;
-        const footerH = 112;
-        ctx.fillStyle = "#f8fafc";
-        ctx.beginPath();
-        drawRoundedRect(ctx, footerX, currentY, footerW, footerH, 12);
-        ctx.fill();
-        ctx.strokeStyle = "#e2e8f0";
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-
-        ctx.textAlign = "left";
-        ctx.fillStyle = "#0f172a";
-        ctx.font = "800 13px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-        ctx.fillText("Next Steps & Class Assignment:", footerX + 20, currentY + 26);
-
-        ctx.fillStyle = "#475569";
-        ctx.font = "500 12px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-        ctx.fillText(
-          "Our academic coordinator will reach out via WhatsApp/Email within 2 to 4 hours to introduce your certified teacher.",
-          footerX + 20,
-          currentY + 52
-        );
-
-        ctx.fillStyle = "#64748b";
-        ctx.font = "700 11px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-        ctx.fillText(
-          "Support: info@altanzeelquranacademy.com  |  WhatsApp: +92 327 4816872  |  www.altanzeelquranacademy.com",
-          footerX + 20,
-          currentY + 86
-        );
-
-        // Convert canvas to PNG blob & trigger download
-        canvas.toBlob((blob) => {
-          if (!blob) {
-            setDownloadingImage(false);
-            return;
-          }
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement("a");
-          link.href = url;
-          link.download = `AlTanzeel-Registration-${registrationNumber}.png`;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          URL.revokeObjectURL(url);
-          setDownloadingImage(false);
-        }, "image/png");
-      } catch (err) {
-        console.error("Canvas image generation error:", err);
-        setDownloadingImage(false);
-      }
-    };
-
-    // Load logo with crossOrigin support
-    const logoImg = new window.Image();
-    logoImg.crossOrigin = "anonymous";
-    logoImg.onload = () => renderSlip(logoImg);
-    logoImg.onerror = () => renderSlip();
-    logoImg.src = "/tanzeel-logo.png";
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -680,6 +449,7 @@ export default function TrialClassModal({ isOpen, onClose }: TrialClassModalProp
       }
 
       setRegistrationNumber(regNum);
+      setRegisteredAt(new Date().toLocaleString());
       setSubmittedData({ ...formData });
       setSubmitted(true);
     } catch (err: any) {
@@ -856,6 +626,487 @@ export default function TrialClassModal({ isOpen, onClose }: TrialClassModalProp
             >
               Close Window
             </button>
+
+            {/* Hidden Slip Template for 100% Identical PNG / JPG Export via html2canvas */}
+            <div
+              ref={slipCardRef}
+              style={{
+                position: "fixed",
+                left: "-9999px",
+                top: 0,
+                width: "650px",
+                backgroundColor: "#ffffff",
+                padding: "36px 32px",
+                borderRadius: "20px",
+                border: "1px solid #e2e8f0",
+                boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
+                color: "#0f172a",
+                fontFamily:
+                  "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+                zIndex: -100,
+                pointerEvents: "none",
+                boxSizing: "border-box",
+                overflow: "hidden",
+              }}
+            >
+              {/* Center Middle Watermark Logo */}
+              <div
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  pointerEvents: "none",
+                  zIndex: 0,
+                  opacity: 0.085,
+                  userSelect: "none",
+                }}
+              >
+                <img
+                  src="/tanzeel-logo.png"
+                  alt="Al Tanzeel Watermark"
+                  crossOrigin="anonymous"
+                  style={{
+                    width: "240px",
+                    height: "240px",
+                    objectFit: "contain",
+                    display: "block",
+                  }}
+                />
+              </div>
+
+              <div style={{ position: "relative", zIndex: 1 }}>
+                {/* Header */}
+                <div
+                  style={{
+                    textAlign: "center",
+                    borderBottom: "2px solid #0f172a",
+                    paddingBottom: "20px",
+                    marginBottom: "22px",
+                  }}
+                >
+                  <img
+                    src="/tanzeel-logo.png"
+                    alt="Al Tanzeel Quran Academy"
+                    crossOrigin="anonymous"
+                    style={{
+                      width: "80px",
+                      height: "80px",
+                      objectFit: "contain",
+                      margin: "0 auto 10px auto",
+                      display: "block",
+                    }}
+                  />
+                  <h1
+                    style={{
+                      fontSize: "24px",
+                      fontWeight: 900,
+                      color: "#fa841e",
+                      letterSpacing: "-0.5px",
+                      margin: 0,
+                    }}
+                  >
+                    Al Tanzeel Quran Academy
+                  </h1>
+                  <div
+                    style={{
+                      fontSize: "13px",
+                      color: "#64748b",
+                      fontWeight: 600,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.5px",
+                      marginTop: "4px",
+                    }}
+                  >
+                    Online Quran &amp; Islamic Studies Worldwide
+                  </div>
+                  <div
+                    style={{
+                      display: "inline-block",
+                      background: "#ecfdf5",
+                      border: "1px solid #10b981",
+                      color: "#047857",
+                      fontWeight: 700,
+                      fontSize: "11px",
+                      padding: "4px 14px",
+                      borderRadius: "9999px",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.5px",
+                      marginTop: "10px",
+                    }}
+                  >
+                    Official Free Trial Class Confirmation Slip
+                  </div>
+                </div>
+
+                {/* Reg Box */}
+                <div
+                  style={{
+                    background: "#f8fafc",
+                    border: "2px dashed #cbd5e1",
+                    borderRadius: "12px",
+                    padding: "14px 20px",
+                    textAlign: "center",
+                    marginBottom: "22px",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: "11px",
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      color: "#64748b",
+                      letterSpacing: "1.5px",
+                    }}
+                  >
+                    Official Registration Number
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "24px",
+                      fontWeight: 900,
+                      color: "#fa841e",
+                      letterSpacing: "2px",
+                      marginTop: "4px",
+                    }}
+                  >
+                    {registrationNumber}
+                  </div>
+                </div>
+
+                {/* Table */}
+                <table
+                  style={{
+                    width: "100%",
+                    borderCollapse: "collapse",
+                    marginBottom: "22px",
+                    fontSize: "13px",
+                  }}
+                >
+                  <tbody>
+                    <tr style={{ borderBottom: "1px solid #e2e8f0" }}>
+                      <th
+                        style={{
+                          width: "38%",
+                          color: "#64748b",
+                          fontWeight: 600,
+                          textTransform: "uppercase",
+                          fontSize: "11px",
+                          letterSpacing: "0.5px",
+                          padding: "10px 12px",
+                          textAlign: "left",
+                        }}
+                      >
+                        Student Name
+                      </th>
+                      <td
+                        style={{
+                          fontWeight: 700,
+                          color: "#0f172a",
+                          padding: "10px 12px",
+                          textAlign: "left",
+                        }}
+                      >
+                        {submittedData?.name || formData.name}
+                      </td>
+                    </tr>
+                    <tr style={{ borderBottom: "1px solid #e2e8f0" }}>
+                      <th
+                        style={{
+                          width: "38%",
+                          color: "#64748b",
+                          fontWeight: 600,
+                          textTransform: "uppercase",
+                          fontSize: "11px",
+                          letterSpacing: "0.5px",
+                          padding: "10px 12px",
+                          textAlign: "left",
+                        }}
+                      >
+                        Gender
+                      </th>
+                      <td
+                        style={{
+                          fontWeight: 700,
+                          color: "#0f172a",
+                          padding: "10px 12px",
+                          textAlign: "left",
+                        }}
+                      >
+                        {submittedData?.gender || formData.gender}
+                      </td>
+                    </tr>
+                    <tr style={{ borderBottom: "1px solid #e2e8f0" }}>
+                      <th
+                        style={{
+                          width: "38%",
+                          color: "#64748b",
+                          fontWeight: 600,
+                          textTransform: "uppercase",
+                          fontSize: "11px",
+                          letterSpacing: "0.5px",
+                          padding: "10px 12px",
+                          textAlign: "left",
+                        }}
+                      >
+                        Student Age
+                      </th>
+                      <td
+                        style={{
+                          fontWeight: 700,
+                          color: "#0f172a",
+                          padding: "10px 12px",
+                          textAlign: "left",
+                        }}
+                      >
+                        {submittedData?.age || formData.age}
+                      </td>
+                    </tr>
+                    <tr style={{ borderBottom: "1px solid #e2e8f0" }}>
+                      <th
+                        style={{
+                          width: "38%",
+                          color: "#64748b",
+                          fontWeight: 600,
+                          textTransform: "uppercase",
+                          fontSize: "11px",
+                          letterSpacing: "0.5px",
+                          padding: "10px 12px",
+                          textAlign: "left",
+                        }}
+                      >
+                        Country
+                      </th>
+                      <td
+                        style={{
+                          fontWeight: 700,
+                          color: "#0f172a",
+                          padding: "10px 12px",
+                          textAlign: "left",
+                        }}
+                      >
+                        {submittedData?.country || formData.country}
+                      </td>
+                    </tr>
+                    <tr style={{ borderBottom: "1px solid #e2e8f0" }}>
+                      <th
+                        style={{
+                          width: "38%",
+                          color: "#64748b",
+                          fontWeight: 600,
+                          textTransform: "uppercase",
+                          fontSize: "11px",
+                          letterSpacing: "0.5px",
+                          padding: "10px 12px",
+                          textAlign: "left",
+                        }}
+                      >
+                        WhatsApp / Phone
+                      </th>
+                      <td
+                        style={{
+                          fontWeight: 700,
+                          color: "#25D366",
+                          padding: "10px 12px",
+                          textAlign: "left",
+                        }}
+                      >
+                        {submittedData?.phone || formData.phone}
+                      </td>
+                    </tr>
+                    <tr style={{ borderBottom: "1px solid #e2e8f0" }}>
+                      <th
+                        style={{
+                          width: "38%",
+                          color: "#64748b",
+                          fontWeight: 600,
+                          textTransform: "uppercase",
+                          fontSize: "11px",
+                          letterSpacing: "0.5px",
+                          padding: "10px 12px",
+                          textAlign: "left",
+                        }}
+                      >
+                        Email Address
+                      </th>
+                      <td
+                        style={{
+                          fontWeight: 700,
+                          color: "#0f172a",
+                          padding: "10px 12px",
+                          textAlign: "left",
+                        }}
+                      >
+                        {submittedData?.email || formData.email}
+                      </td>
+                    </tr>
+                    <tr style={{ borderBottom: "1px solid #e2e8f0" }}>
+                      <th
+                        style={{
+                          width: "38%",
+                          color: "#64748b",
+                          fontWeight: 600,
+                          textTransform: "uppercase",
+                          fontSize: "11px",
+                          letterSpacing: "0.5px",
+                          padding: "10px 12px",
+                          textAlign: "left",
+                        }}
+                      >
+                        Course Selected
+                      </th>
+                      <td
+                        style={{
+                          fontWeight: 700,
+                          color: "#fa841e",
+                          padding: "10px 12px",
+                          textAlign: "left",
+                        }}
+                      >
+                        {submittedData?.course || formData.course}
+                      </td>
+                    </tr>
+                    <tr style={{ borderBottom: "1px solid #e2e8f0" }}>
+                      <th
+                        style={{
+                          width: "38%",
+                          color: "#64748b",
+                          fontWeight: 600,
+                          textTransform: "uppercase",
+                          fontSize: "11px",
+                          letterSpacing: "0.5px",
+                          padding: "10px 12px",
+                          textAlign: "left",
+                        }}
+                      >
+                        Preferred Time
+                      </th>
+                      <td
+                        style={{
+                          fontWeight: 700,
+                          color: "#0f172a",
+                          padding: "10px 12px",
+                          textAlign: "left",
+                        }}
+                      >
+                        {submittedData?.preferredTime || formData.preferredTime}
+                      </td>
+                    </tr>
+                    {(submittedData?.message || formData.message) && (
+                      <tr style={{ borderBottom: "1px solid #e2e8f0" }}>
+                        <th
+                          style={{
+                            width: "38%",
+                            color: "#64748b",
+                            fontWeight: 600,
+                            textTransform: "uppercase",
+                            fontSize: "11px",
+                            letterSpacing: "0.5px",
+                            padding: "10px 12px",
+                            textAlign: "left",
+                          }}
+                        >
+                          Additional Note
+                        </th>
+                        <td
+                          style={{
+                            fontWeight: 700,
+                            color: "#0f172a",
+                            padding: "10px 12px",
+                            textAlign: "left",
+                          }}
+                        >
+                          {submittedData?.message || formData.message}
+                        </td>
+                      </tr>
+                    )}
+                    <tr style={{ borderBottom: "1px solid #e2e8f0" }}>
+                      <th
+                        style={{
+                          width: "38%",
+                          color: "#64748b",
+                          fontWeight: 600,
+                          textTransform: "uppercase",
+                          fontSize: "11px",
+                          letterSpacing: "0.5px",
+                          padding: "10px 12px",
+                          textAlign: "left",
+                        }}
+                      >
+                        Registered On
+                      </th>
+                      <td
+                        style={{
+                          fontWeight: 700,
+                          color: "#0f172a",
+                          padding: "10px 12px",
+                          textAlign: "left",
+                        }}
+                      >
+                        {registeredAt || new Date().toLocaleString()}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th
+                        style={{
+                          width: "38%",
+                          color: "#64748b",
+                          fontWeight: 600,
+                          textTransform: "uppercase",
+                          fontSize: "11px",
+                          letterSpacing: "0.5px",
+                          padding: "10px 12px",
+                          textAlign: "left",
+                        }}
+                      >
+                        Status
+                      </th>
+                      <td
+                        style={{
+                          fontWeight: 700,
+                          color: "#047857",
+                          padding: "10px 12px",
+                          textAlign: "left",
+                        }}
+                      >
+                        Confirmed (Teacher Assignment in Progress)
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                {/* Footer */}
+                <div
+                  style={{
+                    background: "#f8fafc",
+                    border: "1px solid #e2e8f0",
+                    padding: "16px",
+                    borderRadius: "12px",
+                    fontSize: "12px",
+                    color: "#475569",
+                    lineHeight: 1.6,
+                  }}
+                >
+                  <div
+                    style={{
+                      fontWeight: "bold",
+                      color: "#0f172a",
+                      marginBottom: "4px",
+                    }}
+                  >
+                    Next Steps &amp; Teacher Assignment:
+                  </div>
+                  Our academic coordinator will reach out to you via WhatsApp or
+                  Email within <strong>2 to 4 hours</strong> to introduce your
+                  certified teacher (Male/Female tutor according to your preference)
+                  and schedule your 1-on-1 live trial class.
+                  <br />
+                  <br />
+                  <strong>Official Support:</strong> info@altanzeelquranacademy.com
+                  | WhatsApp: +92 327 4816872 | https://www.altanzeelquranacademy.com
+                </div>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="relative z-10">
