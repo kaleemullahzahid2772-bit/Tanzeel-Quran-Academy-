@@ -25,6 +25,7 @@ import {
   Check,
   Globe,
   FileText,
+  Image as ImageIcon,
 } from "lucide-react";
 import CountrySelect from "./CountrySelect";
 import { supabase } from "@/lib/supabase";
@@ -41,6 +42,7 @@ export default function TrialClassModal({ isOpen, onClose }: TrialClassModalProp
   const [submittedData, setSubmittedData] = useState<any>(null);
   const [registrationNumber, setRegistrationNumber] = useState<string>("");
   const [copied, setCopied] = useState(false);
+  const [downloadingImage, setDownloadingImage] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -62,6 +64,7 @@ export default function TrialClassModal({ isOpen, onClose }: TrialClassModalProp
       setSubmitted(false);
       setSubmittedData(null);
       setRegistrationNumber("");
+      setDownloadingImage(false);
       setFormData({
         name: "",
         email: "",
@@ -320,7 +323,10 @@ export default function TrialClassModal({ isOpen, onClose }: TrialClassModalProp
     }, 450);
   };
 
-  const handleDownloadSlip = () => {
+  const handleDownloadImageSlip = () => {
+    if (downloadingImage) return;
+    setDownloadingImage(true);
+
     const sName = submittedData?.name || formData.name;
     const sGender = submittedData?.gender || formData.gender;
     const sAge = submittedData?.age || formData.age;
@@ -331,48 +337,254 @@ export default function TrialClassModal({ isOpen, onClose }: TrialClassModalProp
     const sTime = submittedData?.preferredTime || formData.preferredTime;
     const sMsg = submittedData?.message || formData.message;
 
-    const receiptText = `===============================================================
-               AL TANZEEL QURAN ACADEMY ONLINE
-             FREE TRIAL CLASS REGISTRATION SLIP
-===============================================================
-Registration No : ${registrationNumber}
-Date Registered : ${new Date().toLocaleString()}
-Status          : Confirmed (Academic Coordinator Contacting Soon)
----------------------------------------------------------------
-STUDENT INFORMATION:
----------------------------------------------------------------
-Full Name       : ${sName}
-Gender          : ${sGender}
-Student Age     : ${sAge}
-Country         : ${sCountry}
-WhatsApp/Phone  : ${sPhone}
-Email Address   : ${sEmail}
-Course Selected : ${sCourse}
-Preferred Time  : ${sTime}
-Additional Note : ${sMsg || "None"}
----------------------------------------------------------------
-WHAT HAPPENS NEXT?
-1. Our Academic Coordinator will connect with you via WhatsApp 
-   or Phone within 2 to 4 hours.
-2. We will confirm your preferred timing and assign a certified 
-   tutor (Male/Female according to your choice).
-3. You will receive the 1-on-1 live class link (Zoom/Google Meet).
----------------------------------------------------------------
-Official Contact & Support:
-WhatsApp: +92 327 4816872
-Email   : info@altanzeelquranacademy.com
-Website : https://www.altanzeelquranacademy.com
-===============================================================`;
+    const canvas = document.createElement("canvas");
+    const width = 1000;
+    const height = sMsg ? 1440 : 1340;
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
 
-    const blob = new Blob([receiptText], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `AlTanzeel-Registration-${registrationNumber}.txt`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    if (!ctx) {
+      setDownloadingImage(false);
+      return;
+    }
+
+    const drawRoundedRect = (
+      c: CanvasRenderingContext2D,
+      x: number,
+      y: number,
+      w: number,
+      h: number,
+      r: number
+    ) => {
+      if (typeof c.roundRect === "function") {
+        c.roundRect(x, y, w, h, r);
+      } else {
+        c.rect(x, y, w, h);
+      }
+    };
+
+    const renderSlip = (logoImg?: HTMLImageElement) => {
+      try {
+        // 1. White Background
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, width, height);
+
+        // Outer Border
+        ctx.strokeStyle = "#e2e8f0";
+        ctx.lineWidth = 3;
+        ctx.strokeRect(16, 16, width - 32, height - 32);
+
+        // Top Gradient Accent Bar
+        const gradient = ctx.createLinearGradient(16, 16, width - 16, 26);
+        gradient.addColorStop(0, "#fa841e");
+        gradient.addColorStop(0.5, "#f59e0b");
+        gradient.addColorStop(1, "#0ea5e9");
+        ctx.fillStyle = gradient;
+        ctx.fillRect(16, 16, width - 32, 10);
+
+        // 2. Center Middle Watermark Logo (with subtle transparency ~ 0.08)
+        if (logoImg && logoImg.complete && logoImg.naturalWidth > 0) {
+          ctx.save();
+          ctx.globalAlpha = 0.08;
+          const wmSize = 280;
+          ctx.drawImage(logoImg, (width - wmSize) / 2, 590, wmSize, wmSize);
+          ctx.restore();
+        }
+
+        // 3. Header Top Logo
+        let currentY = 56;
+        if (logoImg && logoImg.complete && logoImg.naturalWidth > 0) {
+          const topLogoSize = 85;
+          ctx.drawImage(logoImg, (width - topLogoSize) / 2, currentY, topLogoSize, topLogoSize);
+          currentY += topLogoSize + 16;
+        } else {
+          currentY += 20;
+        }
+
+        // 4. Academy Title & Subtitle
+        ctx.fillStyle = "#fa841e";
+        ctx.font = "900 30px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("Al Tanzeel Quran Academy", width / 2, currentY);
+        currentY += 26;
+
+        ctx.fillStyle = "#64748b";
+        ctx.font = "600 13px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+        ctx.fillText("ONLINE QURAN & ISLAMIC STUDIES WORLDWIDE", width / 2, currentY);
+        currentY += 28;
+
+        // Confirmation Badge
+        const badgeText = "OFFICIAL FREE TRIAL CLASS CONFIRMATION SLIP";
+        ctx.font = "700 12px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+        const badgeWidth = ctx.measureText(badgeText).width + 32;
+        ctx.fillStyle = "#ecfdf5";
+        ctx.beginPath();
+        drawRoundedRect(ctx, (width - badgeWidth) / 2, currentY - 16, badgeWidth, 26, 13);
+        ctx.fill();
+        ctx.strokeStyle = "#10b981";
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        ctx.fillStyle = "#047857";
+        ctx.fillText(badgeText, width / 2, currentY + 2);
+        currentY += 38;
+
+        // Divider
+        ctx.strokeStyle = "#e2e8f0";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(50, currentY);
+        ctx.lineTo(width - 50, currentY);
+        ctx.stroke();
+        currentY += 24;
+
+        // 5. Official Registration Number Card
+        const regBoxWidth = 520;
+        const regBoxHeight = 74;
+        const regBoxX = (width - regBoxWidth) / 2;
+        ctx.fillStyle = "#f8fafc";
+        ctx.beginPath();
+        drawRoundedRect(ctx, regBoxX, currentY, regBoxWidth, regBoxHeight, 14);
+        ctx.fill();
+        ctx.strokeStyle = "#cbd5e1";
+        if (typeof ctx.setLineDash === "function") {
+          ctx.setLineDash([6, 4]);
+        }
+        ctx.stroke();
+        if (typeof ctx.setLineDash === "function") {
+          ctx.setLineDash([]);
+        }
+
+        ctx.fillStyle = "#64748b";
+        ctx.font = "700 12px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+        ctx.fillText("OFFICIAL REGISTRATION NUMBER", width / 2, currentY + 24);
+
+        ctx.fillStyle = "#fa841e";
+        ctx.font = "900 28px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+        ctx.fillText(registrationNumber, width / 2, currentY + 56);
+        currentY += regBoxHeight + 30;
+
+        // 6. Student Data Table
+        const tableX = 60;
+        const tableW = width - 120;
+        interface SlipRow {
+          label: string;
+          value: string;
+          color?: string;
+        }
+
+        const rows: SlipRow[] = [
+          { label: "Student Name", value: sName },
+          { label: "Gender", value: sGender },
+          { label: "Student Age", value: sAge ? `${sAge} Years` : "Not specified" },
+          { label: "Country", value: sCountry },
+          { label: "WhatsApp / Phone", value: sPhone, color: "#16a34a" },
+          { label: "Email Address", value: sEmail },
+          { label: "Course Selected", value: sCourse, color: "#fa841e" },
+          { label: "Preferred Class Time", value: sTime, color: "#0284c7" },
+          ...(sMsg ? [{ label: "Student Special Request", value: sMsg }] : []),
+          { label: "Registered On", value: new Date().toLocaleString() },
+          { label: "Enrollment Status", value: "Confirmed (Teacher Assignment in Progress)", color: "#047857" },
+        ];
+
+        const rowHeight = 44;
+        rows.forEach((row, i) => {
+          const rowY = currentY + i * rowHeight;
+
+          // Alternate row background
+          if (i % 2 === 0) {
+            ctx.fillStyle = "#f8fafc";
+            ctx.beginPath();
+            drawRoundedRect(ctx, tableX, rowY, tableW, rowHeight, 6);
+            ctx.fill();
+          }
+
+          // Divider
+          ctx.strokeStyle = "#edf2f7";
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(tableX, rowY + rowHeight);
+          ctx.lineTo(tableX + tableW, rowY + rowHeight);
+          ctx.stroke();
+
+          // Left Label
+          ctx.textAlign = "left";
+          ctx.fillStyle = "#64748b";
+          ctx.font = "600 13px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+          ctx.fillText(row.label.toUpperCase(), tableX + 18, rowY + 27);
+
+          // Right Value
+          ctx.textAlign = "right";
+          ctx.fillStyle = row.color || "#0f172a";
+          ctx.font = "700 14px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+          const val = row.value.length > 48 ? row.value.slice(0, 45) + "..." : row.value;
+          ctx.fillText(val, tableX + tableW - 18, rowY + 27);
+        });
+
+        currentY += rows.length * rowHeight + 25;
+
+        // 7. Footer Box
+        const footerX = 60;
+        const footerW = width - 120;
+        const footerH = 112;
+        ctx.fillStyle = "#f8fafc";
+        ctx.beginPath();
+        drawRoundedRect(ctx, footerX, currentY, footerW, footerH, 12);
+        ctx.fill();
+        ctx.strokeStyle = "#e2e8f0";
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        ctx.textAlign = "left";
+        ctx.fillStyle = "#0f172a";
+        ctx.font = "800 13px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+        ctx.fillText("Next Steps & Class Assignment:", footerX + 20, currentY + 26);
+
+        ctx.fillStyle = "#475569";
+        ctx.font = "500 12px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+        ctx.fillText(
+          "Our academic coordinator will reach out via WhatsApp/Email within 2 to 4 hours to introduce your certified teacher.",
+          footerX + 20,
+          currentY + 52
+        );
+
+        ctx.fillStyle = "#64748b";
+        ctx.font = "700 11px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+        ctx.fillText(
+          "Support: info@altanzeelquranacademy.com  |  WhatsApp: +92 327 4816872  |  www.altanzeelquranacademy.com",
+          footerX + 20,
+          currentY + 86
+        );
+
+        // Convert canvas to PNG blob & trigger download
+        canvas.toBlob((blob) => {
+          if (!blob) {
+            setDownloadingImage(false);
+            return;
+          }
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = url;
+          link.download = `AlTanzeel-Registration-${registrationNumber}.png`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+          setDownloadingImage(false);
+        }, "image/png");
+      } catch (err) {
+        console.error("Canvas image generation error:", err);
+        setDownloadingImage(false);
+      }
+    };
+
+    // Load logo with crossOrigin support
+    const logoImg = new window.Image();
+    logoImg.crossOrigin = "anonymous";
+    logoImg.onload = () => renderSlip(logoImg);
+    logoImg.onerror = () => renderSlip();
+    logoImg.src = "/tanzeel-logo.png";
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -619,11 +831,21 @@ Website : https://www.altanzeelquranacademy.com
 
               <button
                 type="button"
-                onClick={handleDownloadSlip}
-                className="py-3 px-4 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 border border-white/15 transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+                onClick={handleDownloadImageSlip}
+                disabled={downloadingImage}
+                className="py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer disabled:opacity-50"
               >
-                <Download className="w-4 h-4 shrink-0" />
-                <span>Download Text Slip (.txt)</span>
+                {downloadingImage ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin shrink-0" />
+                    <span>Generating Slip...</span>
+                  </>
+                ) : (
+                  <>
+                    <ImageIcon className="w-4 h-4 shrink-0" />
+                    <span>Download Slip (PNG / JPG)</span>
+                  </>
+                )}
               </button>
             </div>
 
