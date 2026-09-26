@@ -87,10 +87,11 @@ export default function AdminDashboardPage() {
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
   const [newAlertRecord, setNewAlertRecord] = useState<TrialRegistration | null>(null);
   const [showNotificationMenu, setShowNotificationMenu] = useState(false);
+  const [testFeedback, setTestFeedback] = useState<string | null>(null);
   const knownIdsRef = React.useRef<Set<string | number>>(new Set());
   const initialLoadDoneRef = React.useRef(false);
 
-  // Load sound setting and initial notification permission + Register Admin SW
+  // Load sound setting, initial notification permission + Register Admin SW and root SW
   useEffect(() => {
     if (typeof window !== "undefined") {
       if ("Notification" in window) {
@@ -106,8 +107,32 @@ export default function AdminDashboardPage() {
         navigator.serviceWorker
           .register("/admin-sw.js", { scope: "/admin/" })
           .catch((err) => console.warn("Admin SW reg error:", err));
+        navigator.serviceWorker
+          .register("/sw.js", { scope: "/" })
+          .catch((err) => console.warn("Root SW reg error:", err));
       }
     }
+  }, []);
+
+  // Unlock mobile audio on first user touch / click
+  useEffect(() => {
+    const unlockAudio = () => {
+      try {
+        const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+        if (AudioCtx) {
+          const ctx = new AudioCtx();
+          ctx.resume().then(() => ctx.close());
+        }
+      } catch (e) {
+        // ignore
+      }
+    };
+    window.addEventListener("click", unlockAudio, { once: true });
+    window.addEventListener("touchstart", unlockAudio, { once: true });
+    return () => {
+      window.removeEventListener("click", unlockAudio);
+      window.removeEventListener("touchstart", unlockAudio);
+    };
   }, []);
 
   // Web Audio Melodic Chime Generator (Works on Mobile & Desktop without external asset files)
@@ -158,31 +183,62 @@ export default function AdminDashboardPage() {
       if (typeof window === "undefined" || !("Notification" in window)) return;
       if (Notification.permission !== "granted") return;
 
+      const safeOptions = {
+        body: options.body || "",
+        icon: "/admin-icon-192.png",
+        badge: "/admin-icon-192.png",
+        tag: options.tag || `trial-reg-${Date.now()}`,
+        vibrate: [300, 150, 300, 150, 400],
+        requireInteraction: true,
+        data: options.data || { url: "/admin/dashboard" },
+        ...options,
+      };
+
       let shown = false;
 
       // 1. Primary for Mobile (Android Chrome & iOS PWA): ServiceWorker showNotification
       if ("serviceWorker" in navigator) {
         try {
-          const swReg =
-            (await navigator.serviceWorker.getRegistration("/admin/")) ||
-            (await navigator.serviceWorker.ready);
-          if (swReg && "showNotification" in swReg) {
-            await swReg.showNotification(title, options);
+          const regs = await navigator.serviceWorker.getRegistrations();
+          const activeReg = regs.find((r) => r.active) || regs[0];
+          if (activeReg && "showNotification" in activeReg) {
+            await activeReg.showNotification(title, safeOptions);
             shown = true;
+          } else {
+            const timeout = new Promise<null>((res) => setTimeout(() => res(null), 800));
+            const readyReg = await Promise.race([navigator.serviceWorker.ready, timeout]);
+            if (readyReg && "showNotification" in readyReg) {
+              await readyReg.showNotification(title, safeOptions);
+              shown = true;
+            }
           }
         } catch (swErr) {
           console.warn("SW showNotification error, falling back:", swErr);
+        }
+
+        // Also postMessage to any controller
+        try {
+          if (navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage({
+              type: "SHOW_NOTIFICATION",
+              title,
+              options: safeOptions,
+            });
+          }
+        } catch (pmErr) {
+          // ignore
         }
       }
 
       // 2. Fallback to desktop window Notification constructor
       if (!shown) {
         try {
-          const n = new Notification(title, options);
+          const n = new Notification(title, safeOptions);
           n.onclick = () => {
             window.focus();
             n.close();
           };
+          shown = true;
         } catch (winErr) {
           console.warn("Window Notification constructor error:", winErr);
         }
@@ -213,8 +269,8 @@ export default function AdminDashboardPage() {
       const body = `Course: ${reg.course || "Quran"} | ${reg.country || "Online"} | Phone: ${reg.phone || ""}`;
       dispatchSystemNotification(title, {
         body,
-        icon: "/tanzeel-logo.png",
-        badge: "/tanzeel-logo.png",
+        icon: "/admin-icon-192.png",
+        badge: "/admin-icon-192.png",
         tag: `trial-reg-${reg.id}`,
         vibrate: [300, 150, 300, 150, 400],
         data: { url: "/admin/dashboard", id: reg.id },
@@ -246,7 +302,15 @@ export default function AdminDashboardPage() {
       return;
     }
     try {
-      const perm = await Notification.requestPermission();
+      let perm: NotificationPermission = Notification.permission;
+      if (perm === "default") {
+        const res = Notification.requestPermission();
+        if (res && typeof (res as any).then === "function") {
+          perm = await res;
+        } else {
+          perm = await new Promise((resolve) => Notification.requestPermission(resolve));
+        }
+      }
       setNotificationPermission(perm);
       if (perm === "granted") {
         playAlertChime();
@@ -255,10 +319,12 @@ export default function AdminDashboardPage() {
         }
         await dispatchSystemNotification("🔔 Al Tanzeel Notifications Active!", {
           body: "You will now receive instant sound & vibration alerts on new registrations.",
-          icon: "/tanzeel-logo.png",
-          badge: "/tanzeel-logo.png",
+          icon: "/admin-icon-192.png",
+          badge: "/admin-icon-192.png",
           tag: "altanzeel-welcome",
         });
+        setTestFeedback("Alerts enabled successfully!");
+        setTimeout(() => setTestFeedback(null), 4000);
       }
     } catch (err) {
       console.error("Permission request error:", err);
@@ -272,10 +338,12 @@ export default function AdminDashboardPage() {
     }
     await dispatchSystemNotification("🔔 Test Alert: Al Tanzeel Quran Academy", {
       body: "Your notifications, sound, and vibration alerts are active!",
-      icon: "/tanzeel-logo.png",
-      badge: "/tanzeel-logo.png",
+      icon: "/admin-icon-192.png",
+      badge: "/admin-icon-192.png",
       tag: "altanzeel-test",
     });
+    setTestFeedback("Test alert sent! If not seen in status bar, check Android Settings > Apps > Chrome/Admin > Notifications.");
+    setTimeout(() => setTestFeedback(null), 6000);
   };
 
   // 1. Session verification
@@ -848,6 +916,22 @@ export default function AdminDashboardPage() {
                 <X className="w-4 h-4" />
               </button>
             </div>
+          </div>
+        )}
+
+        {/* Feedback / Alert Status Toast */}
+        {testFeedback && (
+          <div className="fixed top-20 left-4 right-4 md:left-auto md:right-8 z-50 max-w-md bg-slate-900/95 text-white p-3.5 rounded-2xl shadow-2xl border border-emerald-500/40 animate-fade-in flex items-center justify-between gap-3 backdrop-blur-md">
+            <div className="flex items-center gap-2.5 text-xs min-w-0">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+              <p className="font-medium text-[12px]">{testFeedback}</p>
+            </div>
+            <button
+              onClick={() => setTestFeedback(null)}
+              className="p-1 hover:bg-white/10 rounded-lg text-white/70 hover:text-white shrink-0 cursor-pointer"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
           </div>
         )}
 

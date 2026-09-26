@@ -5,14 +5,16 @@ const ADMIN_ASSETS = [
   "/admin-icon-512.png"
 ];
 
-// Install: Cache essential admin PWA assets only
+// Install: Skip waiting immediately and cache assets safely
 self.addEventListener("install", (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ADMIN_ASSETS);
+      return cache.addAll(ADMIN_ASSETS).catch((err) => {
+        console.warn("Asset caching warning (non-fatal):", err);
+      });
     })
   );
-  self.skipWaiting();
 });
 
 // Activate: Clean up any old caches
