@@ -15,6 +15,8 @@ import {
   ArrowLeft,
   Sparkles,
   User,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
@@ -26,6 +28,24 @@ export default function AdminLoginPage() {
   const [loading, setLoading] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  // Theme State
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
+
+  useEffect(() => {
+    const saved = localStorage.getItem("altanzeel_admin_theme") as "dark" | "light" | null;
+    if (saved === "light" || saved === "dark") {
+      setTheme(saved);
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const next = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    localStorage.setItem("altanzeel_admin_theme", next);
+  };
+
+  const isLight = theme === "light";
 
   // If already logged in, redirect to dashboard
   useEffect(() => {
@@ -109,29 +129,54 @@ export default function AdminLoginPage() {
 
   if (checkingAuth) {
     return (
-      <div className="min-h-screen w-full flex items-center justify-center bg-[#070c11]">
+      <div className={`min-h-screen w-full flex items-center justify-center ${isLight ? "bg-slate-100" : "bg-[#070c11]"}`}>
         <div className="flex flex-col items-center gap-3">
           <Loader2 className="w-8 h-8 animate-spin text-[var(--color-accent)]" />
-          <p className="text-gray-400 text-xs tracking-wider uppercase">Checking Session...</p>
+          <p className={`${isLight ? "text-slate-500" : "text-gray-400"} text-xs tracking-wider uppercase font-semibold`}>Checking Session...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen w-full bg-[#070c11] flex flex-col justify-center items-center p-4 sm:p-6 relative overflow-hidden">
+    <div className={`min-h-screen w-full flex flex-col justify-center items-center p-4 sm:p-6 relative overflow-hidden transition-colors duration-200 ${
+      isLight ? "bg-[#f8fafc]" : "bg-[#070c11]"
+    }`}>
       {/* Background Ambient Glows */}
       <div className="absolute top-1/4 -left-32 w-96 h-96 bg-[var(--color-accent)]/15 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-[var(--color-sky)]/15 rounded-full blur-[120px] pointer-events-none" />
 
       {/* Main Container Card */}
-      <div className="relative z-10 w-full max-w-md bg-gradient-to-b from-[#131d26] to-[#0a1015] border border-white/10 rounded-3xl p-6 sm:p-9 shadow-[0_25px_80px_rgba(0,0,0,0.9)]">
+      <div className={`relative z-10 w-full max-w-md border rounded-3xl p-6 sm:p-9 shadow-2xl transition-all ${
+        isLight
+          ? "bg-white border-slate-200 text-slate-800 shadow-[0_20px_60px_rgba(0,0,0,0.08)]"
+          : "bg-gradient-to-b from-[#131d26] to-[#0a1015] border-white/10 text-white shadow-[0_25px_80px_rgba(0,0,0,0.9)]"
+      }`}>
         {/* Top Accent Strip */}
         <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[var(--color-accent)] via-amber-500 to-[var(--color-sky)] rounded-t-3xl" />
 
+        {/* Theme Toggle Button in Login Card */}
+        <div className="absolute top-4 right-4">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            title={isLight ? "Switch to Dark Mode" : "Switch to Light Mode"}
+            aria-label="Toggle Theme"
+            className={`p-2 rounded-xl border transition-colors ${
+              isLight
+                ? "bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300"
+                : "bg-white/5 hover:bg-white/10 text-amber-400 border-white/10"
+            }`}
+          >
+            {isLight ? <Moon className="w-4 h-4 text-slate-700" /> : <Sun className="w-4 h-4 text-amber-400" />}
+          </button>
+        </div>
+
         {/* Brand Header */}
         <div className="text-center mb-8 flex flex-col items-center">
-          <div className="relative h-16 px-4 mb-3 rounded-2xl overflow-hidden shadow-[0_0_25px_rgba(250,132,30,0.25)] border border-white/15 bg-black/60 flex items-center justify-center">
+          <div className={`relative h-16 px-4 mb-3 rounded-2xl overflow-hidden border flex items-center justify-center ${
+            isLight ? "bg-slate-50 border-slate-200 shadow-sm" : "shadow-[0_0_25px_rgba(250,132,30,0.25)] border-white/15 bg-black/60"
+          }`}>
             <img
               src="/tanzeel-top-logo.png"
               alt="Al Tanzeel Quran Academy Logo"
@@ -139,23 +184,23 @@ export default function AdminLoginPage() {
             />
           </div>
 
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--color-accent)]/15 border border-[var(--color-accent)]/30 text-[var(--color-accent-light)] text-[11px] font-bold uppercase tracking-widest mb-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--color-accent)]/15 border border-[var(--color-accent)]/30 text-[var(--color-accent)] text-[11px] font-bold uppercase tracking-widest mb-2">
             <Sparkles className="w-3 h-3" />
             <span>Secure Admin Portal</span>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+          <h1 className={`text-2xl sm:text-3xl font-black tracking-tight ${isLight ? "text-slate-900" : "text-white"}`}>
             Al Tanzeel <span className="text-[var(--color-accent)]">Admin</span>
           </h1>
-          <p className="text-gray-400 text-xs sm:text-sm mt-1">
+          <p className={`text-xs sm:text-sm mt-1 ${isLight ? "text-slate-500" : "text-gray-400"}`}>
             Sign in to manage student registrations & inquiries
           </p>
         </div>
 
         {/* Error Notification */}
         {errorMsg && (
-          <div className="mb-6 bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs rounded-xl p-3.5 flex items-start gap-2.5 animate-fade-in">
-            <AlertCircle className="w-4 h-4 shrink-0 text-rose-400 mt-0.5" />
+          <div className="mb-6 bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-300 text-xs rounded-xl p-3.5 flex items-start gap-2.5 animate-fade-in font-medium">
+            <AlertCircle className="w-4 h-4 shrink-0 text-rose-500 mt-0.5" />
             <span className="leading-relaxed">{errorMsg}</span>
           </div>
         )}
@@ -164,11 +209,13 @@ export default function AdminLoginPage() {
         <form onSubmit={handleLogin} className="flex flex-col gap-5">
           {/* Username / Email */}
           <div>
-            <label className="block text-gray-300 text-[11px] font-bold uppercase tracking-wider mb-1.5">
+            <label className={`block text-[11px] font-bold uppercase tracking-wider mb-1.5 ${
+              isLight ? "text-slate-700" : "text-gray-300"
+            }`}>
               Admin Username or Email
             </label>
             <div className="relative">
-              <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <User className={`absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 ${isLight ? "text-slate-400" : "text-gray-400"}`} />
               <input
                 type="text"
                 required
@@ -177,18 +224,24 @@ export default function AdminLoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Altanzeel Kaleem"
-                className="w-full bg-[#060a0e] border border-white/15 focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] text-white text-xs sm:text-sm rounded-xl pl-10 pr-4 py-3 outline-none transition-all disabled:opacity-50 placeholder:text-gray-500 shadow-inner"
+                className={`w-full text-xs sm:text-sm rounded-xl pl-10 pr-4 py-3 outline-none transition-all disabled:opacity-50 border focus:ring-1 focus:ring-[var(--color-accent)] ${
+                  isLight
+                    ? "bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[var(--color-accent)]"
+                    : "bg-[#060a0e] border-white/15 text-white placeholder:text-gray-500 focus:border-[var(--color-accent)]"
+                }`}
               />
             </div>
           </div>
 
           {/* Password */}
           <div>
-            <label className="block text-gray-300 text-[11px] font-bold uppercase tracking-wider mb-1.5">
+            <label className={`block text-[11px] font-bold uppercase tracking-wider mb-1.5 ${
+              isLight ? "text-slate-700" : "text-gray-300"
+            }`}>
               Password
             </label>
             <div className="relative">
-              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Lock className={`absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 ${isLight ? "text-slate-400" : "text-gray-400"}`} />
               <input
                 type={showPassword ? "text" : "password"}
                 required
@@ -197,13 +250,19 @@ export default function AdminLoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••••••"
-                className="w-full bg-[#060a0e] border border-white/15 focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] text-white text-xs sm:text-sm rounded-xl pl-10 pr-11 py-3 outline-none transition-all disabled:opacity-50 placeholder:text-gray-600 shadow-inner"
+                className={`w-full text-xs sm:text-sm rounded-xl pl-10 pr-11 py-3 outline-none transition-all disabled:opacity-50 border focus:ring-1 focus:ring-[var(--color-accent)] ${
+                  isLight
+                    ? "bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[var(--color-accent)]"
+                    : "bg-[#060a0e] border-white/15 text-white placeholder:text-gray-600 focus:border-[var(--color-accent)]"
+                }`}
               />
               <button
                 type="button"
                 tabIndex={-1}
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors p-1"
+                className={`absolute right-3.5 top-1/2 -translate-y-1/2 transition-colors p-1 ${
+                  isLight ? "text-slate-400 hover:text-slate-700" : "text-gray-400 hover:text-white"
+                }`}
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
@@ -219,7 +278,7 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="mt-2 w-full py-3.5 rounded-xl bg-gradient-to-r from-[var(--color-accent)] via-amber-500 to-[var(--color-accent)] hover:from-[var(--color-accent-hover)] hover:to-amber-600 text-white font-black text-xs sm:text-sm tracking-wider uppercase shadow-[0_4px_25px_rgba(250,132,30,0.4)] transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 border border-white/20 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="mt-2 w-full py-3.5 rounded-xl bg-gradient-to-r from-[var(--color-accent)] via-amber-500 to-[var(--color-accent)] hover:from-[var(--color-accent-hover)] hover:to-amber-600 text-white font-black text-xs sm:text-sm tracking-wider uppercase shadow-[0_4px_25px_rgba(250,132,30,0.4)] transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 border border-white/20 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             {loading ? (
               <>
@@ -236,15 +295,19 @@ export default function AdminLoginPage() {
         </form>
 
         {/* Card Footer: Back to Website Link */}
-        <div className="mt-8 pt-5 border-t border-white/10 flex items-center justify-between text-xs text-gray-400">
+        <div className={`mt-8 pt-5 border-t flex items-center justify-between text-xs ${
+          isLight ? "border-slate-200 text-slate-500" : "border-white/10 text-gray-400"
+        }`}>
           <Link
             href="/"
-            className="inline-flex items-center gap-1.5 text-gray-400 hover:text-white transition-colors group"
+            className={`inline-flex items-center gap-1.5 transition-colors group ${
+              isLight ? "text-slate-600 hover:text-slate-900" : "text-gray-400 hover:text-white"
+            }`}
           >
             <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
             <span>Back to Website</span>
           </Link>
-          <span className="text-[10px] text-gray-500 font-mono">
+          <span className={`text-[10px] font-mono ${isLight ? "text-slate-400" : "text-gray-500"}`}>
             SSL 256-bit Encrypted
           </span>
         </div>
