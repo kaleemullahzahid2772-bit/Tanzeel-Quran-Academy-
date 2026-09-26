@@ -106,6 +106,11 @@ export default function AdminDashboardPage() {
       if ("serviceWorker" in navigator) {
         navigator.serviceWorker
           .register("/admin-sw.js", { scope: "/admin/" })
+          .then(() => {
+            if (Notification.permission === "granted") {
+              subscribeToPushNotifications();
+            }
+          })
           .catch((err) => console.warn("Admin SW reg error:", err));
         navigator.serviceWorker
           .register("/sw.js", { scope: "/" })
@@ -113,6 +118,53 @@ export default function AdminDashboardPage() {
       }
     }
   }, []);
+
+  // Convert base64 VAPID public key to Uint8Array for PushManager
+  const urlBase64ToUint8Array = useCallback((base64String: string) => {
+    const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+  }, []);
+
+  // Register device for Background Web Push (Wakes phone when app is CLOSED)
+  const subscribeToPushNotifications = useCallback(async () => {
+    if (typeof window === "undefined" || !("serviceWorker" in navigator)) return;
+    try {
+      const vapidKey =
+        process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ||
+        "BPdk80vUwRyflYgiCGXj9Z8I-mTor70KoJI27RuG-rRz3LKgGMGhOcDXAJVp67O9E4SvnvwAB9SNBsM-j-mxlLY";
+
+      const regs = await navigator.serviceWorker.getRegistrations();
+      const activeReg =
+        regs.find((r) => r.active) || regs[0] || (await navigator.serviceWorker.ready);
+
+      if (activeReg && "pushManager" in activeReg) {
+        let subscription = await activeReg.pushManager.getSubscription();
+        if (!subscription) {
+          subscription = await activeReg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(vapidKey),
+          });
+        }
+
+        if (subscription) {
+          await fetch("/api/push/subscribe", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ subscription: subscription.toJSON() }),
+          });
+          console.log("Background Web Push registered successfully!");
+        }
+      }
+    } catch (err) {
+      console.warn("Background Push subscription error:", err);
+    }
+  }, [urlBase64ToUint8Array]);
 
   // Unlock mobile audio on first user touch / click
   useEffect(() => {
@@ -317,13 +369,14 @@ export default function AdminDashboardPage() {
         if (typeof navigator !== "undefined" && "vibrate" in navigator) {
           navigator.vibrate([300, 150, 300]);
         }
+        await subscribeToPushNotifications();
         await dispatchSystemNotification("🔔 Al Tanzeel Notifications Active!", {
-          body: "You will now receive instant sound & vibration alerts on new registrations.",
+          body: "You will now receive instant sound & vibration alerts even when app is closed.",
           icon: "/admin-icon-192.png",
           badge: "/admin-icon-192.png",
           tag: "altanzeel-welcome",
         });
-        setTestFeedback("Alerts enabled successfully!");
+        setTestFeedback("Alerts enabled & registered for background notifications!");
         setTimeout(() => setTestFeedback(null), 4000);
       }
     } catch (err) {
@@ -336,13 +389,26 @@ export default function AdminDashboardPage() {
     if (typeof navigator !== "undefined" && "vibrate" in navigator) {
       navigator.vibrate([300, 150, 300]);
     }
+    // 1. Local notification
     await dispatchSystemNotification("🔔 Test Alert: Al Tanzeel Quran Academy", {
       body: "Your notifications, sound, and vibration alerts are active!",
       icon: "/admin-icon-192.png",
       badge: "/admin-icon-192.png",
       tag: "altanzeel-test",
     });
-    setTestFeedback("Test alert sent! If not seen in status bar, check Android Settings > Apps > Chrome/Admin > Notifications.");
+
+    // 2. Server-side Background Web Push test
+    fetch("/api/push/notify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: "🔔 Background Push Test",
+        body: "Background push is active! You will receive alerts even when app is closed.",
+        url: "/admin/dashboard",
+      }),
+    }).catch(() => {});
+
+    setTestFeedback("Test alert sent! Background push triggered.");
     setTimeout(() => setTestFeedback(null), 6000);
   };
 

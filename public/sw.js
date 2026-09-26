@@ -33,3 +33,29 @@ self.addEventListener("message", (event) => {
     event.waitUntil(self.registration.showNotification(title, options));
   }
 });
+
+// Background Web Push Event (Wakes device & displays alert when app/browser is completely CLOSED)
+self.addEventListener("push", (event) => {
+  let data = {};
+  if (event.data) {
+    try {
+      data = event.data.json();
+    } catch (e) {
+      data = { title: "🔔 Al Tanzeel Quran Academy", body: event.data.text() };
+    }
+  }
+
+  const title = data.title || "🔔 New Registration Received!";
+  const options = {
+    body: data.body || "New student trial registration received.",
+    icon: data.icon || "/admin-icon-192.png",
+    badge: data.badge || "/admin-icon-192.png",
+    tag: data.tag || `trial-reg-${Date.now()}`,
+    vibrate: data.vibrate || [300, 150, 300, 150, 400],
+    requireInteraction: true,
+    data: data.data || { url: "/admin/dashboard" },
+  };
+
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+

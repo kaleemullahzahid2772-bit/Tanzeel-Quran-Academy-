@@ -481,6 +481,22 @@ export default function TrialClassModal({ isOpen, onClose }: TrialClassModalProp
       } catch (broadcastErr) {
         console.warn("Realtime broadcast alert exception:", broadcastErr);
       }
+
+      // Background Web Push Notification to Admin devices (Wakes closed apps & mobile phones)
+      try {
+        fetch("/api/push/notify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: `🔔 New Registration: ${formData.name.trim()}`,
+            body: `Course: ${formData.course.trim()} | Country: ${formData.country.trim()} | Phone: ${formData.phone.trim()}`,
+            url: "/admin/dashboard",
+            data: { id: (data && data[0]?.id) || undefined },
+          }),
+        }).catch((pErr) => console.warn("Background push notify fetch warning:", pErr));
+      } catch (pushErr) {
+        // non-fatal
+      }
     } catch (err: any) {
       console.error("Error submitting form:", err);
       setErrorMsg(err?.message || "An unexpected error occurred. Please try again.");
