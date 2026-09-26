@@ -99,62 +99,217 @@ export default function TrialClassModal({ isOpen, onClose }: TrialClassModalProp
     const sTime = submittedData?.preferredTime || formData.preferredTime;
     const sMsg = submittedData?.message || formData.message;
 
+    const origin = typeof window !== "undefined" ? window.location.origin : "https://www.altanzeelquranacademy.com";
+    const logoUrl = `${origin}/tanzeel-logo.png`;
+
     printWindow.document.write(`
       <!DOCTYPE html>
       <html>
       <head>
-        <title>Trial Class Slip - ${registrationNumber}</title>
+        <title>Al Tanzeel Registration Slip - ${registrationNumber}</title>
         <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <style>
           * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-          body { padding: 40px 24px; color: #0f172a; background: #ffffff; max-width: 650px; margin: 0 auto; line-height: 1.5; }
-          .header { text-align: center; border-bottom: 2px solid #0f172a; padding-bottom: 20px; margin-bottom: 24px; }
-          .logo { font-size: 24px; font-weight: 900; color: #fa841e; letter-spacing: -0.5px; }
-          .sublogo { font-size: 13px; color: #64748b; font-weight: 600; text-transform: uppercase; margin-top: 4px; }
-          .badge { display: inline-block; background: #ecfdf5; border: 1px solid #10b981; color: #047857; font-weight: 700; font-size: 11px; padding: 4px 12px; border-radius: 9999px; text-transform: uppercase; margin-top: 10px; }
-          .reg-box { background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 12px; padding: 16px 20px; text-align: center; margin-bottom: 24px; }
-          .reg-label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: 1.5px; }
-          .reg-num { font-size: 26px; font-weight: 900; color: #fa841e; letter-spacing: 2px; margin-top: 4px; }
-          table { width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 14px; }
-          th, td { padding: 10px 12px; border-bottom: 1px solid #e2e8f0; text-align: left; }
-          th { width: 38%; color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 11px; }
-          td { font-weight: 700; color: #0f172a; }
-          .footer { background: #f8fafc; border: 1px solid #e2e8f0; padding: 16px; border-radius: 12px; font-size: 12px; color: #475569; }
-          .note-title { font-weight: bold; color: #0f172a; margin-bottom: 4px; }
-          @media print { body { padding: 15px; } }
+          body {
+            padding: 30px 20px;
+            color: #0f172a;
+            background: #f8fafc;
+            margin: 0;
+            line-height: 1.5;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+          }
+          .slip-card {
+            position: relative;
+            max-width: 650px;
+            margin: 0 auto;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 36px 32px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+          }
+          /* Center Watermark with subtle transparency */
+          .watermark-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 0;
+            user-select: none;
+            opacity: 0.085;
+          }
+          .watermark-img {
+            width: 240px;
+            height: 240px;
+            object-fit: contain;
+            display: block;
+          }
+          .slip-content {
+            position: relative;
+            z-index: 1;
+          }
+          .header {
+            text-align: center;
+            border-bottom: 2px solid #0f172a;
+            padding-bottom: 20px;
+            margin-bottom: 22px;
+          }
+          .top-logo {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin: 0 auto 10px auto;
+            display: block;
+          }
+          .logo-title {
+            font-size: 24px;
+            font-weight: 900;
+            color: #fa841e;
+            letter-spacing: -0.5px;
+            margin: 0;
+          }
+          .sublogo {
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+          }
+          .badge {
+            display: inline-block;
+            background: #ecfdf5;
+            border: 1px solid #10b981;
+            color: #047857;
+            font-weight: 700;
+            font-size: 11px;
+            padding: 4px 14px;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 10px;
+          }
+          .reg-box {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 14px 20px;
+            text-align: center;
+            margin-bottom: 22px;
+          }
+          .reg-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #64748b;
+            letter-spacing: 1.5px;
+          }
+          .reg-num {
+            font-size: 24px;
+            font-weight: 900;
+            color: #fa841e;
+            letter-spacing: 2px;
+            margin-top: 4px;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 22px;
+            font-size: 13px;
+          }
+          th, td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+          }
+          th {
+            width: 38%;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+          }
+          td {
+            font-weight: 700;
+            color: #0f172a;
+          }
+          .footer {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #475569;
+            line-height: 1.6;
+          }
+          .note-title {
+            font-weight: bold;
+            color: #0f172a;
+            margin-bottom: 4px;
+          }
+          @media print {
+            body { padding: 0; background: #ffffff; }
+            .slip-card { border: none; box-shadow: none; padding: 12px 4px; }
+            .watermark-container { opacity: 0.09; }
+          }
         </style>
       </head>
       <body>
-        <div class="header">
-          <div class="logo">Al Tanzeel Quran Academy</div>
-          <div class="sublogo">Online Quran & Islamic Studies Worldwide</div>
-          <div class="badge">Official Free Trial Class Confirmation Slip</div>
+        <div class="slip-card">
+          <!-- Center Middle Watermark Logo -->
+          <div class="watermark-container">
+            <img src="${logoUrl}" alt="Al Tanzeel Watermark" class="watermark-img" />
+          </div>
+
+          <div class="slip-content">
+            <div class="header">
+              <!-- Top Tanzeel Logo -->
+              <img src="${logoUrl}" alt="Al Tanzeel Quran Academy" class="top-logo" />
+              <h1 class="logo-title">Al Tanzeel Quran Academy</h1>
+              <div class="sublogo">Online Quran & Islamic Studies Worldwide</div>
+              <div class="badge">Official Free Trial Class Confirmation Slip</div>
+            </div>
+
+            <div class="reg-box">
+              <div class="reg-label">Official Registration Number</div>
+              <div class="reg-num">${registrationNumber}</div>
+            </div>
+
+            <table>
+              <tr><th>Student Name</th><td>${sName}</td></tr>
+              <tr><th>Gender</th><td>${sGender}</td></tr>
+              <tr><th>Student Age</th><td>${sAge}</td></tr>
+              <tr><th>Country</th><td>${sCountry}</td></tr>
+              <tr><th>WhatsApp / Phone</th><td>${sPhone}</td></tr>
+              <tr><th>Email Address</th><td>${sEmail}</td></tr>
+              <tr><th>Course Selected</th><td>${sCourse}</td></tr>
+              <tr><th>Preferred Time</th><td>${sTime}</td></tr>
+              ${sMsg ? `<tr><th>Additional Note</th><td>${sMsg}</td></tr>` : ''}
+              <tr><th>Registered On</th><td>${new Date().toLocaleString()}</td></tr>
+              <tr><th>Status</th><td><span style="color:#047857;font-weight:bold;">Confirmed (Teacher Assignment in Progress)</span></td></tr>
+            </table>
+
+            <div class="footer">
+              <div class="note-title">Next Steps & Teacher Assignment:</div>
+              Our academic coordinator will reach out to you via WhatsApp or Email within <strong>2 to 4 hours</strong> to introduce your certified teacher (Male/Female tutor according to your preference) and schedule your 1-on-1 live trial class.
+              <br /><br />
+              <strong>Official Support:</strong> info@altanzeelquranacademy.com | WhatsApp: +92 327 4816872 | https://www.altanzeelquranacademy.com
+            </div>
+          </div>
         </div>
 
-        <div class="reg-box">
-          <div class="reg-label">Registration Number</div>
-          <div class="reg-num">${registrationNumber}</div>
-        </div>
-
-        <table>
-          <tr><th>Student Name</th><td>${sName}</td></tr>
-          <tr><th>Gender</th><td>${sGender}</td></tr>
-          <tr><th>Student Age</th><td>${sAge}</td></tr>
-          <tr><th>Country</th><td>${sCountry}</td></tr>
-          <tr><th>WhatsApp / Phone</th><td>${sPhone}</td></tr>
-          <tr><th>Email Address</th><td>${sEmail}</td></tr>
-          <tr><th>Course Selected</th><td>${sCourse}</td></tr>
-          <tr><th>Preferred Time</th><td>${sTime}</td></tr>
-          ${sMsg ? `<tr><th>Additional Note</th><td>${sMsg}</td></tr>` : ''}
-          <tr><th>Registered On</th><td>${new Date().toLocaleString()}</td></tr>
-        </table>
-
-        <div class="footer">
-          <div class="note-title">Next Steps:</div>
-          Our academic coordinator will reach out to you via WhatsApp or Email within <strong>2 to 4 hours</strong> to introduce your certified teacher and confirm your 1-on-1 trial class schedule.
-          <br /><br />
-          <strong>Support:</strong> info@altanzeelquranacademy.com | WhatsApp: +92 327 4816872
-        </div>
+        <script>
+          window.addEventListener('load', function() {
+            setTimeout(function() {
+              window.print();
+            }, 350);
+          });
+        </script>
       </body>
       </html>
     `);
@@ -162,7 +317,7 @@ export default function TrialClassModal({ isOpen, onClose }: TrialClassModalProp
     printWindow.focus();
     setTimeout(() => {
       printWindow.print();
-    }, 400);
+    }, 450);
   };
 
   const handleDownloadSlip = () => {
@@ -344,18 +499,23 @@ Website : https://www.altanzeelquranacademy.com
 
         {submitted ? (
           <div className="py-2 text-center flex flex-col items-center gap-4 sm:gap-5 animate-fade-in">
-            {/* Top Success Badge */}
-            <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center border-2 border-emerald-500/40 shadow-[0_0_30px_rgba(16,185,129,0.3)]">
-              <CheckCircle2 className="w-9 h-9" />
-            </div>
-
-            <div className="space-y-1">
-              <h3 className="text-xl sm:text-2xl font-black text-white">
-                Trial Class Request Received!
-              </h3>
-              <p className="text-emerald-400 text-xs font-bold uppercase tracking-widest">
-                JazakAllah Khair!
-              </p>
+            {/* Top Logo and Success Badge */}
+            <div className="flex flex-col items-center gap-2.5">
+              <div className="w-16 h-16 rounded-2xl bg-black/60 border border-white/20 p-2 flex items-center justify-center shadow-[0_0_25px_rgba(250,132,30,0.25)]">
+                <img
+                  src="/tanzeel-logo.png"
+                  alt="Al Tanzeel Quran Academy Logo"
+                  className="w-12 h-12 object-contain"
+                />
+              </div>
+              <div className="space-y-1">
+                <h3 className="text-xl sm:text-2xl font-black text-white">
+                  Trial Class Request Received!
+                </h3>
+                <p className="text-emerald-400 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5" /> JazakAllah Khair!
+                </p>
+              </div>
             </div>
 
             {/* Registration Number Card */}
@@ -454,7 +614,7 @@ Website : https://www.altanzeelquranacademy.com
                 className="py-3 px-4 rounded-xl bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
               >
                 <Printer className="w-4 h-4 shrink-0" />
-                <span>Print / Save as PDF</span>
+                <span>Download / Print Slip (PDF)</span>
               </button>
 
               <button
@@ -463,7 +623,7 @@ Website : https://www.altanzeelquranacademy.com
                 className="py-3 px-4 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 border border-white/15 transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
               >
                 <Download className="w-4 h-4 shrink-0" />
-                <span>Download Slip (.txt)</span>
+                <span>Download Text Slip (.txt)</span>
               </button>
             </div>
 
