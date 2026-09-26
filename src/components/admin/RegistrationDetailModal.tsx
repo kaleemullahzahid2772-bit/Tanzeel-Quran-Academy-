@@ -16,9 +16,11 @@ import {
   AlertCircle,
   Loader2,
   FileText,
+  Printer,
 } from "lucide-react";
 import { TrialRegistration, RegistrationStatus } from "@/types/admin";
 import { WhatsAppIcon } from "../FloatingContact";
+import RegistrationSlipModal from "./RegistrationSlipModal";
 
 interface Props {
   registration: TrialRegistration | null;
@@ -49,6 +51,7 @@ export default function RegistrationDetailModal({
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [showSlipModal, setShowSlipModal] = useState(false);
 
   useEffect(() => {
     if (registration) {
@@ -139,25 +142,36 @@ export default function RegistrationDetailModal({
           </button>
         </div>
 
-        {/* Quick Contact Action Buttons */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 my-4">
-          <a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2.5 py-3 px-4 rounded-xl bg-[#25D366]/15 hover:bg-[#25D366]/25 border border-[#25D366]/40 text-[#25D366] font-bold text-xs sm:text-sm transition-all hover:scale-[1.01]"
+        {/* Quick Action Buttons: WhatsApp, Email & View/Download Slip */}
+        <div className="flex flex-col gap-2.5 my-4">
+          <button
+            type="button"
+            onClick={() => setShowSlipModal(true)}
+            className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500/20 via-[var(--color-accent)]/20 to-amber-500/20 hover:from-amber-500/30 hover:to-amber-500/30 border border-[var(--color-accent)]/40 text-[var(--color-accent)] font-bold text-xs sm:text-sm transition-all hover:scale-[1.01] shadow-sm cursor-pointer"
           >
-            <WhatsAppIcon className="w-4 h-4 shrink-0" />
-            <span>Chat on WhatsApp</span>
-          </a>
+            <Printer className="w-4 h-4 text-[var(--color-accent)] shrink-0" />
+            <span>View &amp; Download Confirmation Slip (PDF / PNG)</span>
+          </button>
 
-          <a
-            href={`mailto:${registration.email}?subject=Al Tanzeel Quran Academy - Free Trial Class`}
-            className="flex items-center justify-center gap-2.5 py-3 px-4 rounded-xl bg-[var(--color-sky)]/15 hover:bg-[var(--color-sky)]/25 border border-[var(--color-sky)]/40 text-[var(--color-sky-light)] font-bold text-xs sm:text-sm transition-all hover:scale-[1.01]"
-          >
-            <Mail className="w-4 h-4 shrink-0" />
-            <span>Send Email</span>
-          </a>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-[#25D366]/15 hover:bg-[#25D366]/25 border border-[#25D366]/40 text-[#25D366] font-bold text-xs sm:text-sm transition-all hover:scale-[1.01]"
+            >
+              <WhatsAppIcon className="w-4 h-4 shrink-0" />
+              <span>Chat on WhatsApp</span>
+            </a>
+
+            <a
+              href={`mailto:${registration.email}?subject=Al Tanzeel Quran Academy - Free Trial Class`}
+              className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-[var(--color-sky)]/15 hover:bg-[var(--color-sky)]/25 border border-[var(--color-sky)]/40 text-[var(--color-sky-light)] font-bold text-xs sm:text-sm transition-all hover:scale-[1.01]"
+            >
+              <Mail className="w-4 h-4 shrink-0" />
+              <span>Send Email</span>
+            </a>
+          </div>
         </div>
 
         {/* Details Grid */}
@@ -386,6 +400,14 @@ export default function RegistrationDetailModal({
           </div>
         </div>
       </div>
+
+      {/* Official Registration Slip Preview & Download Modal */}
+      <RegistrationSlipModal
+        isOpen={showSlipModal}
+        onClose={() => setShowSlipModal(false)}
+        registration={registration}
+        theme={theme}
+      />
     </div>
   );
 }

@@ -34,10 +34,12 @@ import {
   Volume2,
   VolumeX,
   X,
+  Printer,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { TrialRegistration, RegistrationStatus, DashboardStats } from "@/types/admin";
 import RegistrationDetailModal from "@/components/admin/RegistrationDetailModal";
+import RegistrationSlipModal from "@/components/admin/RegistrationSlipModal";
 import { WhatsAppIcon } from "@/components/FloatingContact";
 
 export default function AdminDashboardPage() {
@@ -75,6 +77,10 @@ export default function AdminDashboardPage() {
   // Detail Modal State
   const [selectedReg, setSelectedReg] = useState<TrialRegistration | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Slip Modal State
+  const [selectedSlipReg, setSelectedSlipReg] = useState<TrialRegistration | null>(null);
+  const [isSlipModalOpen, setIsSlipModalOpen] = useState(false);
 
   // Mobile Push & Sound Alert State
   const [notificationPermission, setNotificationPermission] = useState<NotificationPermission | "unsupported">("default");
@@ -1162,20 +1168,38 @@ export default function AdminDashboardPage() {
 
                           {/* Action */}
                           <td className="py-4 px-4 text-right whitespace-nowrap">
-                            <button
-                              onClick={() => {
-                                setSelectedReg(reg);
-                                setIsModalOpen(true);
-                              }}
-                              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all hover:scale-105 ${
-                                isLight
-                                  ? "bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300"
-                                  : "bg-white/5 hover:bg-white/15 text-gray-200 hover:text-white border-white/10"
-                              }`}
-                            >
-                              <Eye className="w-3.5 h-3.5" />
-                              <span>Details</span>
-                            </button>
+                            <div className="flex items-center justify-end gap-1.5">
+                              <button
+                                onClick={() => {
+                                  setSelectedSlipReg(reg);
+                                  setIsSlipModalOpen(true);
+                                }}
+                                title="View & Download Official Slip (PDF / PNG)"
+                                className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-semibold transition-all hover:scale-105 cursor-pointer ${
+                                  isLight
+                                    ? "bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-200"
+                                    : "bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border-amber-500/30"
+                                }`}
+                              >
+                                <Printer className="w-3.5 h-3.5 text-[var(--color-accent)]" />
+                                <span>Slip</span>
+                              </button>
+
+                              <button
+                                onClick={() => {
+                                  setSelectedReg(reg);
+                                  setIsModalOpen(true);
+                                }}
+                                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all hover:scale-105 cursor-pointer ${
+                                  isLight
+                                    ? "bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300"
+                                    : "bg-white/5 hover:bg-white/15 text-gray-200 hover:text-white border-white/10"
+                                }`}
+                              >
+                                <Eye className="w-3.5 h-3.5" />
+                                <span>Details</span>
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       );
@@ -1309,21 +1333,21 @@ export default function AdminDashboardPage() {
                       </select>
                     </div>
 
-                    {/* Action Buttons Row (WhatsApp, Call, Details) */}
-                    <div className="grid grid-cols-3 gap-2 pt-1 border-t border-white/10 dark:border-white/10 border-slate-200">
+                    {/* Action Buttons Row (WhatsApp, Call, Slip, Details) */}
+                    <div className="grid grid-cols-4 gap-1.5 pt-1 border-t border-white/10 dark:border-white/10 border-slate-200">
                       <a
                         href={`https://wa.me/${cleanPhone}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-1 py-2 px-2 rounded-xl bg-[#25D366]/15 hover:bg-[#25D366]/25 border border-[#25D366]/30 text-[#25D366] font-bold text-xs active:scale-95 transition-transform"
+                        className="flex items-center justify-center gap-1 py-2 px-1.5 rounded-xl bg-[#25D366]/15 hover:bg-[#25D366]/25 border border-[#25D366]/30 text-[#25D366] font-bold text-xs active:scale-95 transition-transform"
                       >
                         <WhatsAppIcon className="w-3.5 h-3.5 shrink-0" />
-                        <span className="truncate">WhatsApp</span>
+                        <span className="truncate">WA</span>
                       </a>
 
                       <a
                         href={`tel:${reg.phone}`}
-                        className={`flex items-center justify-center gap-1 py-2 px-2 rounded-xl border font-bold text-xs active:scale-95 transition-transform ${
+                        className={`flex items-center justify-center gap-1 py-2 px-1.5 rounded-xl border font-bold text-xs active:scale-95 transition-transform ${
                           isLight
                             ? "bg-sky-50 hover:bg-sky-100 text-sky-700 border-sky-200"
                             : "bg-sky-500/15 hover:bg-sky-500/25 border-sky-500/30 text-sky-400"
@@ -1335,10 +1359,26 @@ export default function AdminDashboardPage() {
 
                       <button
                         onClick={() => {
+                          setSelectedSlipReg(reg);
+                          setIsSlipModalOpen(true);
+                        }}
+                        title="View & Download Official Slip (PDF / PNG)"
+                        className={`flex items-center justify-center gap-1 py-2 px-1.5 rounded-xl border font-bold text-xs active:scale-95 transition-transform cursor-pointer ${
+                          isLight
+                            ? "bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-200"
+                            : "bg-amber-500/15 hover:bg-amber-500/25 border-amber-500/30 text-amber-300"
+                        }`}
+                      >
+                        <Printer className="w-3.5 h-3.5 text-[var(--color-accent)] shrink-0" />
+                        <span className="truncate">Slip</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
                           setSelectedReg(reg);
                           setIsModalOpen(true);
                         }}
-                        className={`flex items-center justify-center gap-1 py-2 px-2 rounded-xl border font-bold text-xs active:scale-95 transition-transform ${
+                        className={`flex items-center justify-center gap-1 py-2 px-1.5 rounded-xl border font-bold text-xs active:scale-95 transition-transform cursor-pointer ${
                           isLight
                             ? "bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800"
                             : "bg-white/10 hover:bg-white/20 border-white/15 text-white"
@@ -1365,6 +1405,17 @@ export default function AdminDashboardPage() {
           setSelectedReg(null);
         }}
         onUpdate={handleUpdateRegistration}
+        theme={theme}
+      />
+
+      {/* Official Registration Slip Preview & Download Modal */}
+      <RegistrationSlipModal
+        registration={selectedSlipReg}
+        isOpen={isSlipModalOpen}
+        onClose={() => {
+          setIsSlipModalOpen(false);
+          setSelectedSlipReg(null);
+        }}
         theme={theme}
       />
     </div>
