@@ -90,7 +90,7 @@ export default function AdminDashboardPage() {
   const knownIdsRef = React.useRef<Set<string | number>>(new Set());
   const initialLoadDoneRef = React.useRef(false);
 
-  // Load sound setting and initial notification permission
+  // Load sound setting and initial notification permission + Register Admin SW
   useEffect(() => {
     if (typeof window !== "undefined") {
       if ("Notification" in window) {
@@ -102,6 +102,11 @@ export default function AdminDashboardPage() {
       if (savedSound !== null) {
         setSoundEnabled(savedSound === "true");
       }
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register("/admin-sw.js", { scope: "/admin/" })
+          .catch((err) => console.warn("Admin SW reg error:", err));
+      }
     }
   }, []);
 
@@ -112,6 +117,9 @@ export default function AdminDashboardPage() {
       const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
       if (!AudioCtx) return;
       const ctx = new AudioCtx();
+      if (ctx.state === "suspended") {
+        ctx.resume();
+      }
       const now = ctx.currentTime;
 
       // Note 1: E5 (659.25 Hz)
@@ -144,58 +152,92 @@ export default function AdminDashboardPage() {
     }
   }, []);
 
+  // Dispatch notification safely via ServiceWorker (Required on mobile Android & iOS) and fallback to window Notification
+  const dispatchSystemNotification = useCallback(
+    async (title: string, options: any) => {
+      if (typeof window === "undefined" || !("Notification" in window)) return;
+      if (Notification.permission !== "granted") return;
+
+      let shown = false;
+
+      // 1. Primary for Mobile (Android Chrome & iOS PWA): ServiceWorker showNotification
+      if ("serviceWorker" in navigator) {
+        try {
+          const swReg =
+            (await navigator.serviceWorker.getRegistration("/admin/")) ||
+            (await navigator.serviceWorker.ready);
+          if (swReg && "showNotification" in swReg) {
+            await swReg.showNotification(title, options);
+            shown = true;
+          }
+        } catch (swErr) {
+          console.warn("SW showNotification error, falling back:", swErr);
+        }
+      }
+
+      // 2. Fallback to desktop window Notification constructor
+      if (!shown) {
+        try {
+          const n = new Notification(title, options);
+          n.onclick = () => {
+            window.focus();
+            n.close();
+          };
+        } catch (winErr) {
+          console.warn("Window Notification constructor error:", winErr);
+        }
+      }
+    },
+    []
+  );
+
   // Trigger sound, vibration and system notification
-  const triggerNotification = useCallback((reg: TrialRegistration) => {
-    // 1. Play chime if sound enabled
-    if (soundEnabled) {
-      playAlertChime();
-    }
-
-    // 2. Physical Mobile Phone Vibration
-    if (typeof navigator !== "undefined" && "vibrate" in navigator) {
-      try {
-        navigator.vibrate([200, 100, 200, 100, 300]);
-      } catch (e) {
-        // ignore
+  const triggerNotification = useCallback(
+    (reg: TrialRegistration) => {
+      // 1. Play chime if sound enabled
+      if (soundEnabled) {
+        playAlertChime();
       }
-    }
 
-    // 3. System Push Notification
-    if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
-      try {
-        const title = `🔔 New Registration: ${reg.full_name || "New Student"}`;
-        const body = `Course: ${reg.course || "Quran"} | ${reg.country || "Online"} | Phone: ${reg.phone || ""}`;
-        const n = new Notification(title, {
-          body,
-          icon: "/tanzeel-logo.png",
-          badge: "/tanzeel-logo.png",
-          tag: `trial-reg-${reg.id}`,
-        } as any);
-
-        n.onclick = () => {
-          window.focus();
-          setSelectedReg(reg);
-          setIsModalOpen(true);
-          n.close();
-        };
-      } catch (err) {
-        console.warn("Notification trigger error:", err);
+      // 2. Physical Mobile Phone Vibration
+      if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+        try {
+          navigator.vibrate([300, 150, 300, 150, 400]);
+        } catch (e) {
+          // ignore
+        }
       }
-    }
 
-    // 4. In-App Floating Toast Banner
-    setNewAlertRecord(reg);
-  }, [playAlertChime, soundEnabled]);
+      // 3. System Push Notification on Mobile Phone / Desktop
+      const title = `🔔 New Registration: ${reg.full_name || "New Student"}`;
+      const body = `Course: ${reg.course || "Quran"} | ${reg.country || "Online"} | Phone: ${reg.phone || ""}`;
+      dispatchSystemNotification(title, {
+        body,
+        icon: "/tanzeel-logo.png",
+        badge: "/tanzeel-logo.png",
+        tag: `trial-reg-${reg.id}`,
+        vibrate: [300, 150, 300, 150, 400],
+        data: { url: "/admin/dashboard", id: reg.id },
+      });
+
+      // 4. In-App Floating Toast Banner
+      setNewAlertRecord(reg);
+    },
+    [playAlertChime, soundEnabled, dispatchSystemNotification]
+  );
 
   // Handle incoming new registration
-  const handleIncomingRegistration = useCallback((newRecord: TrialRegistration) => {
-    if (!newRecord?.id) return;
-    if (knownIdsRef.current.has(newRecord.id)) return;
-    knownIdsRef.current.add(newRecord.id);
+  const handleIncomingRegistration = useCallback(
+    (newRecord: TrialRegistration) => {
+      if (!newRecord?.id) return;
+      if (knownIdsRef.current.has(newRecord.id)) return;
+      knownIdsRef.current.add(newRecord.id);
 
-    setRegistrations((prev) => [newRecord, ...prev.filter((r) => r.id !== newRecord.id)]);
-    triggerNotification(newRecord);
-  }, [triggerNotification]);
+      setRegistrations((prev) => [newRecord, ...prev.filter((r) => r.id !== newRecord.id)]);
+      triggerNotification(newRecord);
+    },
+    [triggerNotification]
+  );
 
   // Request Notification Permission
   const requestNotificationPermission = async () => {
@@ -209,11 +251,13 @@ export default function AdminDashboardPage() {
       if (perm === "granted") {
         playAlertChime();
         if (typeof navigator !== "undefined" && "vibrate" in navigator) {
-          navigator.vibrate([200, 100, 200]);
+          navigator.vibrate([300, 150, 300]);
         }
-        new Notification("🔔 Al Tanzeel Notifications Active!", {
+        await dispatchSystemNotification("🔔 Al Tanzeel Notifications Active!", {
           body: "You will now receive instant sound & vibration alerts on new registrations.",
           icon: "/tanzeel-logo.png",
+          badge: "/tanzeel-logo.png",
+          tag: "altanzeel-welcome",
         });
       }
     } catch (err) {
@@ -221,17 +265,17 @@ export default function AdminDashboardPage() {
     }
   };
 
-  const testAlert = () => {
+  const testAlert = async () => {
     playAlertChime();
     if (typeof navigator !== "undefined" && "vibrate" in navigator) {
-      navigator.vibrate([200, 100, 200]);
+      navigator.vibrate([300, 150, 300]);
     }
-    if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
-      new Notification("🔔 Test Alert: Al Tanzeel Quran Academy", {
-        body: "Your notifications, sound, and vibration alerts are active!",
-        icon: "/tanzeel-logo.png",
-      });
-    }
+    await dispatchSystemNotification("🔔 Test Alert: Al Tanzeel Quran Academy", {
+      body: "Your notifications, sound, and vibration alerts are active!",
+      icon: "/tanzeel-logo.png",
+      badge: "/tanzeel-logo.png",
+      tag: "altanzeel-test",
+    });
   };
 
   // 1. Session verification
@@ -304,12 +348,22 @@ export default function AdminDashboardPage() {
     }
   }, [checkingAuth, fetchRegistrations]);
 
-  // Realtime Supabase listener & Polling fallback
+  // Realtime Supabase listener & Fast Polling fallback
   useEffect(() => {
     if (checkingAuth) return;
 
-    // 1. Supabase Realtime channel
-    const channel = supabase
+    // 1. Supabase Broadcast Channel (Zero configuration instant push across all clients)
+    const alertChannel = supabase
+      .channel("altanzeel-admin-live-alerts")
+      .on("broadcast", { event: "new_registration" }, ({ payload }) => {
+        if (payload) {
+          handleIncomingRegistration(payload as TrialRegistration);
+        }
+      })
+      .subscribe();
+
+    // 2. Supabase Postgres Realtime channel (Direct DB replication)
+    const dbChannel = supabase
       .channel("admin-realtime-trial-registrations")
       .on(
         "postgres_changes",
@@ -326,8 +380,8 @@ export default function AdminDashboardPage() {
       )
       .subscribe();
 
-    // 2. Periodic background check every 15s (polling fallback)
-    const interval = setInterval(async () => {
+    // 3. Fast Periodic background check every 4 seconds
+    const checkLatestRegistrations = async () => {
       try {
         const { data } = await supabase
           .from("trial_class_requests")
@@ -345,11 +399,25 @@ export default function AdminDashboardPage() {
       } catch (err) {
         // silent catch
       }
-    }, 15000);
+    };
+
+    const interval = setInterval(checkLatestRegistrations, 4000);
+
+    // 4. Instant check when mobile phone screen turns on or user switches tabs
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        checkLatestRegistrations();
+      }
+    };
+    window.addEventListener("focus", checkLatestRegistrations);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
-      supabase.removeChannel(channel);
+      supabase.removeChannel(alertChannel);
+      supabase.removeChannel(dbChannel);
       clearInterval(interval);
+      window.removeEventListener("focus", checkLatestRegistrations);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, [checkingAuth, handleIncomingRegistration]);
 

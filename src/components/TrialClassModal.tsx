@@ -452,6 +452,35 @@ export default function TrialClassModal({ isOpen, onClose }: TrialClassModalProp
       setRegisteredAt(new Date().toLocaleString());
       setSubmittedData({ ...formData });
       setSubmitted(true);
+
+      // Realtime Alert Broadcast to Admin Portal (Zero-configuration instant push)
+      try {
+        const alertChannel = supabase.channel("altanzeel-admin-live-alerts");
+        alertChannel.subscribe((status) => {
+          if (status === "SUBSCRIBED") {
+            alertChannel.send({
+              type: "broadcast",
+              event: "new_registration",
+              payload: {
+                id: (data && data[0]?.id) || Math.floor(10000 + Math.random() * 90000),
+                full_name: formData.name.trim(),
+                phone: formData.phone.trim(),
+                email: formData.email.trim(),
+                country: formData.country.trim(),
+                course: formData.course.trim(),
+                preferred_time: formData.preferredTime.trim(),
+                age: formData.age.trim(),
+                gender: formData.gender.trim(),
+                message: formData.message.trim(),
+                created_at: new Date().toISOString(),
+                status: "New",
+              },
+            });
+          }
+        });
+      } catch (broadcastErr) {
+        console.warn("Realtime broadcast alert exception:", broadcastErr);
+      }
     } catch (err: any) {
       console.error("Error submitting form:", err);
       setErrorMsg(err?.message || "An unexpected error occurred. Please try again.");
