@@ -636,6 +636,7 @@ Website : https://www.altanzeelquranacademy.com
                       <option value="Translation of Holy Quran">Translation of Holy Quran</option>
                       <option value="Women Quranic Course">Women Quranic Course</option>
                       <option value="Tajweed Course">Tajweed Course</option>
+                      <option value="Beautiful Quran Recitation Course">Beautiful Quran Recitation Course</option>
                       <option value="Other">Other</option>
                     </select>
                     <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
