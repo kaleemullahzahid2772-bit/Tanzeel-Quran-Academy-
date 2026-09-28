@@ -3,9 +3,33 @@ import webPush from "@/lib/webpush";
 import { supabase } from "@/lib/supabase";
 import { inMemorySubscriptions } from "@/lib/subscriptionStore";
 
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    },
+  });
+}
+
 export async function POST(req: Request) {
   try {
-    const { title, body, url, data } = await req.json();
+    const bodyJson = await req.json();
+
+    // Support both direct client dispatch AND Supabase Database Webhook payloads
+    let title = bodyJson.title;
+    let body = bodyJson.body;
+    let url = bodyJson.url || "/admin/dashboard";
+    let data = bodyJson.data || {};
+
+    if (bodyJson.record && !title) {
+      const rec = bodyJson.record;
+      title = `🔔 New Registration: ${rec.full_name || "New Student"}`;
+      body = `Course: ${rec.course || "Quran"} | ${rec.country || "Online"} | Phone: ${rec.phone || ""}`;
+      data = { id: rec.id };
+    }
 
     const payload = JSON.stringify({
       title: title || "🔔 New Registration Received!",
@@ -13,7 +37,7 @@ export async function POST(req: Request) {
       icon: "/admin-icon-192.png",
       badge: "/admin-icon-192.png",
       tag: `trial-reg-${Date.now()}`,
-      vibrate: [300, 150, 300, 150, 400],
+      vibrate: [500, 200, 500, 200, 500],
       data: {
         url: url || "/admin/dashboard",
         ...(data || {}),
@@ -61,20 +85,28 @@ export async function POST(req: Request) {
     subMap.forEach((v) => subscriptions.push(v));
 
     if (subscriptions.length === 0) {
-      return NextResponse.json({
-        success: true,
-        message: "No admin push subscriptions found",
-        sent: 0,
-      });
+      return NextResponse.json(
+        {
+          success: true,
+          message: "No admin push subscriptions found",
+          sent: 0,
+        },
+        {
+          headers: { "Access-Control-Allow-Origin": "*" },
+        }
+      );
     }
 
-    // 2. Dispatch push to all devices concurrently
+    // 2. Dispatch push to all devices with HIGH urgency & 24h TTL
     let sentCount = 0;
     const expiredEndpoints: string[] = [];
 
     const sendPromises = subscriptions.map(async (sub) => {
       try {
-        await webPush.sendNotification(sub, payload);
+        await webPush.sendNotification(sub, payload, {
+          urgency: "high",
+          TTL: 86400,
+        });
         sentCount++;
       } catch (err: any) {
         if (err.statusCode === 404 || err.statusCode === 410) {
@@ -101,16 +133,24 @@ export async function POST(req: Request) {
       }
     }
 
-    return NextResponse.json({
-      success: true,
-      sent: sentCount,
-      total: subscriptions.length,
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        sent: sentCount,
+        total: subscriptions.length,
+      },
+      {
+        headers: { "Access-Control-Allow-Origin": "*" },
+      }
+    );
   } catch (err: any) {
     console.error("Push notify error:", err);
     return NextResponse.json(
       { error: err.message || "Failed to dispatch push notification" },
-      { status: 500 }
+      {
+        status: 500,
+        headers: { "Access-Control-Allow-Origin": "*" },
+      }
     );
   }
 }

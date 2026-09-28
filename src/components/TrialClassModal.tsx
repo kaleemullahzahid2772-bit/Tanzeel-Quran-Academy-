@@ -482,20 +482,25 @@ export default function TrialClassModal({ isOpen, onClose }: TrialClassModalProp
         console.warn("Realtime broadcast alert exception:", broadcastErr);
       }
 
-      // Background Web Push Notification to Admin devices (Wakes closed apps & mobile phones)
+      // Background Web Push Notification to Admin devices (Wakes closed apps & mobile phones anywhere in the world)
       try {
-        fetch("/api/push/notify", {
+        const notifyPromise = fetch("/api/push/notify", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          keepalive: true,
           body: JSON.stringify({
             title: `🔔 New Registration: ${formData.name.trim()}`,
             body: `Course: ${formData.course.trim()} | Country: ${formData.country.trim()} | Phone: ${formData.phone.trim()}`,
             url: "/admin/dashboard",
             data: { id: (data && data[0]?.id) || undefined },
           }),
-        }).catch((pErr) => console.warn("Background push notify fetch warning:", pErr));
+        });
+
+        // 3-second timeout race so user UI never hangs
+        const timeoutPromise = new Promise((resolve) => setTimeout(resolve, 3000));
+        await Promise.race([notifyPromise, timeoutPromise]);
       } catch (pushErr) {
-        // non-fatal
+        console.warn("Background push notify dispatch warning (non-fatal):", pushErr);
       }
     } catch (err: any) {
       console.error("Error submitting form:", err);

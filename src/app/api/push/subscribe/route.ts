@@ -2,6 +2,17 @@ import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { inMemorySubscriptions } from "@/lib/subscriptionStore";
 
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    },
+  });
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -10,7 +21,10 @@ export async function POST(req: Request) {
     if (!subscription || !subscription.endpoint || !subscription.keys) {
       return NextResponse.json(
         { error: "Invalid subscription payload" },
-        { status: 400 }
+        {
+          status: 400,
+          headers: { "Access-Control-Allow-Origin": "*" },
+        }
       );
     }
 
@@ -31,15 +45,23 @@ export async function POST(req: Request) {
       console.warn("Supabase subscription persist warning (non-fatal):", dbErr);
     }
 
-    return NextResponse.json({
-      success: true,
-      message: "Push subscription registered successfully",
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Push subscription registered successfully",
+      },
+      {
+        headers: { "Access-Control-Allow-Origin": "*" },
+      }
+    );
   } catch (err: any) {
     console.error("Subscription error:", err);
     return NextResponse.json(
       { error: err.message || "Failed to register subscription" },
-      { status: 500 }
+      {
+        status: 500,
+        headers: { "Access-Control-Allow-Origin": "*" },
+      }
     );
   }
 }

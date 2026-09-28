@@ -49,10 +49,11 @@ self.addEventListener("push", (event) => {
   const options = {
     body: data.body || "New student trial registration received.",
     icon: data.icon || "/admin-icon-192.png",
-    badge: data.badge || "/admin-icon-192.png",
+    badge: "/admin-icon-192.png",
     tag: data.tag || `trial-reg-${Date.now()}`,
-    vibrate: data.vibrate || [300, 150, 300, 150, 400],
+    vibrate: data.vibrate || [500, 200, 500, 200, 500],
     requireInteraction: true,
+    renotify: true,
     data: data.data || { url: "/admin/dashboard" },
   };
 
