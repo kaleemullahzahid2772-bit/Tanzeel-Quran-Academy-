@@ -232,7 +232,7 @@ export default function RegistrationSlipModal({
               <tr><th>Gender</th><td>${registration.gender || "Not specified"}</td></tr>
               <tr><th>Student Age</th><td>${registration.age ? `${registration.age} Years` : "Not specified"}</td></tr>
               <tr><th>Country</th><td>${registration.country || "-"}</td></tr>
-              <tr><th>WhatsApp / Phone</th><td>${registration.phone || "-"}</td></tr>
+              <tr><th>WhatsApp / Viber / Phone</th><td>${registration.phone || "-"}</td></tr>
               <tr><th>Email Address</th><td>${registration.email || "-"}</td></tr>
               <tr><th>Course Selected</th><td>${registration.course || "-"}</td></tr>
               <tr><th>Preferred Time</th><td>${registration.preferred_time || "-"}</td></tr>
@@ -641,7 +641,7 @@ export default function RegistrationSlipModal({
                         textAlign: "left",
                       }}
                     >
-                      WhatsApp / Phone
+                      WhatsApp / Viber / Phone
                     </th>
                     <td
                       style={{

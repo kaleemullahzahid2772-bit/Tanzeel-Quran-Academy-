@@ -291,7 +291,7 @@ export default function TrialClassModal({ isOpen, onClose }: TrialClassModalProp
               <tr><th>Gender</th><td>${sGender}</td></tr>
               <tr><th>Student Age</th><td>${sAge}</td></tr>
               <tr><th>Country</th><td>${sCountry}</td></tr>
-              <tr><th>WhatsApp / Phone</th><td>${sPhone}</td></tr>
+              <tr><th>WhatsApp / Viber / Phone</th><td>${sPhone}</td></tr>
               <tr><th>Email Address</th><td>${sEmail}</td></tr>
               <tr><th>Course Selected</th><td>${sCourse}</td></tr>
               <tr><th>Preferred Time</th><td>${sTime}</td></tr>
@@ -606,7 +606,7 @@ export default function TrialClassModal({ isOpen, onClose }: TrialClassModalProp
                   <span className="text-white font-bold">{submittedData?.country || formData.country}</span>
                 </div>
                 <div>
-                  <span className="text-gray-400 text-[11px] block">WhatsApp / Phone</span>
+                  <span className="text-gray-400 text-[11px] block">WhatsApp / Viber / Phone</span>
                   <span className="text-[#25D366] font-bold">{submittedData?.phone || formData.phone}</span>
                 </div>
                 <div>
@@ -951,7 +951,7 @@ export default function TrialClassModal({ isOpen, onClose }: TrialClassModalProp
                           textAlign: "left",
                         }}
                       >
-                        WhatsApp / Phone
+                        WhatsApp / Viber / Phone
                       </th>
                       <td
                         style={{
@@ -1259,10 +1259,10 @@ export default function TrialClassModal({ isOpen, onClose }: TrialClassModalProp
                   />
                 </div>
 
-                {/* 5. WhatsApp / Phone */}
+                {/* 5. WhatsApp / Viber / Phone */}
                 <div>
                   <label className="block text-gray-200 text-xs font-bold uppercase tracking-wider mb-1.5">
-                    WhatsApp / Phone <span className="text-[var(--color-accent)]">*</span>
+                    WhatsApp / Viber / Phone <span className="text-[var(--color-accent)]">*</span>
                   </label>
                   <div className="relative">
                     <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
