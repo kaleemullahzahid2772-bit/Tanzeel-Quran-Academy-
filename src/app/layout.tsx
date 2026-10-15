@@ -119,6 +119,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <meta name="google-site-verification" content="google771fd95d29ad6e27" />
         {/* Schema.org EducationalOrganization & WebSite JSON-LD */}
         <script
           type="application/ld+json"
