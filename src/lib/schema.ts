@@ -317,3 +317,68 @@ export function getContactPageSchema() {
     },
   };
 }
+
+/**
+ * Generates Teacher Catalog ItemList Schema JSON-LD
+ */
+export function getTeacherCatalogSchema(teachers: import("@/data/teachers").Teacher[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Certified Online Quran Teachers and Scholars",
+    description:
+      "Meet our certified male and female online Quran teachers, Huffaz, and Qaris at Al Tanzeel Quran Academy.",
+    url: `${SITE_URL}/online-quran-teacher`,
+    numberOfItems: teachers.length,
+    itemListElement: teachers.map((teacher, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": "Person",
+        name: teacher.name,
+        jobTitle: teacher.role,
+        description: teacher.bio,
+        image: teacher.image.startsWith("http") ? teacher.image : `${SITE_URL}${teacher.image}`,
+        worksFor: {
+          "@type": "EducationalOrganization",
+          name: ACADEMY_NAME,
+          url: SITE_URL,
+        },
+        knowsAbout: teacher.specialties,
+        knowsLanguage: teacher.languages,
+        gender: teacher.gender,
+        hasCredential: teacher.ijazah
+          ? {
+              "@type": "EducationalOccupationalCredential",
+              name: teacher.ijazah,
+            }
+          : undefined,
+      },
+    })),
+  };
+}
+
+/**
+ * Generates Quran Teacher WebPage Schema JSON-LD
+ */
+export function getQuranTeacherPageSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": `${SITE_URL}/online-quran-teacher#webpage`,
+    url: `${SITE_URL}/online-quran-teacher`,
+    name: "Best Online Quran Teacher | Certified Male & Female Quran Tutors",
+    description:
+      "Learn Quran online with certified male and female Quran teachers. 1-on-1 personalized lessons with Tajweed, Hifz, and Noorani Qaida across USA, UK, Canada, Australia and worldwide.",
+    isPartOf: {
+      "@id": `${SITE_URL}/#website`,
+    },
+    about: {
+      "@type": "EducationalOrganization",
+      name: ACADEMY_NAME,
+      url: SITE_URL,
+    },
+    inLanguage: "en-US",
+  };
+}
+

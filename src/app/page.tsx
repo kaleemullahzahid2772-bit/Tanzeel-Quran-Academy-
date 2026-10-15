@@ -8,16 +8,16 @@ import { getCourseCatalogSchema, SITE_URL } from "@/lib/schema";
 import { coursesData } from "@/data/courses";
 
 export const metadata: Metadata = {
-  title: "Online Quran Classes for Kids & Adults | Al Tanzeel Quran Academy",
+  title: "Best Online Quran Teacher & Classes for Kids & Adults | Al Tanzeel Quran Academy",
   description:
-    "Learn Quran online with certified male and female scholars at Al Tanzeel Quran Academy. 1-on-1 personalized classes with Tajweed, Hifz & Noorani Qaida for kids & adults worldwide. Book your 3-day free trial today!",
+    "Find the best online Quran teacher at Al Tanzeel Quran Academy. 1-on-1 personalized classes with certified male and female Quran tutors with Tajweed, Hifz & Noorani Qaida for kids & adults in USA, UK, Canada & worldwide. Book your 3-day free trial!",
   alternates: {
     canonical: SITE_URL,
   },
   openGraph: {
-    title: "Online Quran Classes for Kids & Adults | Al Tanzeel Quran Academy",
+    title: "Best Online Quran Teacher & Classes for Kids & Adults | Al Tanzeel Quran Academy",
     description:
-      "Join students worldwide learning Quran online with certified male and female scholars. Flexible 1-on-1 classes for kids, adults, and sisters. Book your 3-day free trial!",
+      "Learn Quran online with certified male and female Quran teachers. Flexible 1-on-1 classes for kids, adults, and sisters worldwide. Book your 3-day free trial!",
     url: SITE_URL,
     siteName: "Al Tanzeel Quran Academy",
     images: [
@@ -25,16 +25,16 @@ export const metadata: Metadata = {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Al Tanzeel Quran Academy - Online Quran Classes for Kids & Adults",
+        alt: "Al Tanzeel Quran Academy - Best Online Quran Teacher & Classes",
       },
     ],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Online Quran Classes for Kids & Adults | Al Tanzeel Quran Academy",
+    title: "Best Online Quran Teacher & Classes | Al Tanzeel Quran Academy",
     description:
-      "Online Quran classes for kids and adults with certified male and female scholars. Book a 3-day free trial class today!",
+      "Online Quran classes and 1-on-1 Quran teachers for kids and adults with certified male and female scholars. Book a 3-day free trial class today!",
     images: ["/og-image.jpg"],
   },
 };

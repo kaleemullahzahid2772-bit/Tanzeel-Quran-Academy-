@@ -9,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Core Static Pages
   const staticRoutes: { route: string; priority: number; changeFrequency: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never" }[] = [
     { route: "", priority: 1.0, changeFrequency: "weekly" },
+    { route: "/online-quran-teacher", priority: 0.95, changeFrequency: "weekly" },
     { route: "/about", priority: 0.8, changeFrequency: "monthly" },
     { route: "/courses", priority: 0.9, changeFrequency: "weekly" },
     { route: "/downloads", priority: 0.85, changeFrequency: "weekly" },

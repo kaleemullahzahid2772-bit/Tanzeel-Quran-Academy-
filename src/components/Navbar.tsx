@@ -14,6 +14,7 @@ import { WhatsAppIcon } from "./FloatingContact";
 
 const navLinks = [
   { name: "Home", href: "/" },
+  { name: "Quran Teachers", href: "/online-quran-teacher" },
   { name: "About", href: "/about" },
   { name: "Courses", href: "/courses" },
   { name: "Downloads", href: "/downloads" },

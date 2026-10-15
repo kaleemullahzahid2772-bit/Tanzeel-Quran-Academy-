@@ -151,6 +151,11 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
+                  <Link href="/online-quran-teacher" className="hover:text-[var(--color-accent)] transition-colors">
+                    Online Quran Teachers
+                  </Link>
+                </li>
+                <li>
                   <Link href="/about" className="hover:text-[var(--color-accent)] transition-colors">
                     About Academy
                   </Link>
