@@ -102,6 +102,9 @@ export const metadata: Metadata = {
     shortcut: "/favicon.ico",
     apple: "/favicon.ico",
   },
+  verification: {
+    google: "google771fd95d29ad6e27",
+  },
   category: "Education",
 };
 
