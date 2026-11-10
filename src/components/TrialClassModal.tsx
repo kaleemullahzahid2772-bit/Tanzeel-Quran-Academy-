@@ -29,6 +29,8 @@ import {
   Image as ImageIcon,
 } from "lucide-react";
 import CountrySelect from "./CountrySelect";
+import CountryCodeSelect from "./CountryCodeSelect";
+import { getDialCodeByCountryName } from "@/data/countries";
 import { supabase } from "@/lib/supabase";
 
 interface TrialClassModalProps {
@@ -50,6 +52,7 @@ export default function TrialClassModal({ isOpen, onClose }: TrialClassModalProp
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    countryCode: "+960",
     phone: "",
     age: "",
     gender: "",
@@ -59,6 +62,15 @@ export default function TrialClassModal({ isOpen, onClose }: TrialClassModalProp
     message: "",
     agreed: false,
   });
+
+  const handleCountryChange = (country: string) => {
+    const dialCode = getDialCodeByCountryName(country);
+    setFormData((prev) => ({
+      ...prev,
+      country,
+      countryCode: dialCode || prev.countryCode,
+    }));
+  };
 
   if (!isOpen) return null;
 
@@ -71,6 +83,7 @@ export default function TrialClassModal({ isOpen, onClose }: TrialClassModalProp
       setFormData({
         name: "",
         email: "",
+        countryCode: "+960",
         phone: "",
         age: "",
         gender: "",
@@ -362,6 +375,7 @@ export default function TrialClassModal({ isOpen, onClose }: TrialClassModalProp
 
     if (
       !formData.name.trim() ||
+      !formData.countryCode.trim() ||
       !formData.phone.trim() ||
       !formData.email.trim() ||
       !formData.age.trim() ||
@@ -380,10 +394,17 @@ export default function TrialClassModal({ isOpen, onClose }: TrialClassModalProp
     setLoading(true);
     setErrorMsg(null);
 
+    // Sanitize and format phone number with country code
+    const rawLocalPhone = formData.phone.trim().replace(/^0+/, "");
+    const dialPrefix = formData.countryCode.trim();
+    const fullPhone = rawLocalPhone.startsWith("+")
+      ? rawLocalPhone
+      : `${dialPrefix} ${rawLocalPhone}`.trim();
+
     try {
       const payload: Record<string, any> = {
         full_name: formData.name.trim(),
-        phone: formData.phone.trim(),
+        phone: fullPhone,
         email: formData.email.trim(),
         age: formData.age.trim(),
         gender: formData.gender.trim(),
@@ -427,7 +448,7 @@ export default function TrialClassModal({ isOpen, onClose }: TrialClassModalProp
 
           const fallbackPayload: Record<string, any> = {
             full_name: formData.name.trim(),
-            phone: formData.phone.trim(),
+            phone: fullPhone,
             email: formData.email.trim(),
             country: formData.country.trim(),
             course: formData.course.trim(),
@@ -450,7 +471,7 @@ export default function TrialClassModal({ isOpen, onClose }: TrialClassModalProp
 
       setRegistrationNumber(regNum);
       setRegisteredAt(new Date().toLocaleString());
-      setSubmittedData({ ...formData });
+      setSubmittedData({ ...formData, phone: fullPhone });
       setSubmitted(true);
 
       // Realtime Alert Broadcast to Admin Portal (Zero-configuration instant push)
@@ -464,7 +485,7 @@ export default function TrialClassModal({ isOpen, onClose }: TrialClassModalProp
               payload: {
                 id: (data && data[0]?.id) || Math.floor(10000 + Math.random() * 90000),
                 full_name: formData.name.trim(),
-                phone: formData.phone.trim(),
+                phone: fullPhone,
                 email: formData.email.trim(),
                 country: formData.country.trim(),
                 course: formData.course.trim(),
@@ -1254,27 +1275,42 @@ export default function TrialClassModal({ isOpen, onClose }: TrialClassModalProp
                   </label>
                   <CountrySelect
                     value={formData.country}
-                    onChange={(country) => setFormData({ ...formData, country })}
+                    onChange={handleCountryChange}
                     required
                   />
                 </div>
 
-                {/* 5. WhatsApp / Viber / Phone */}
+                {/* 5. Country Code & WhatsApp / Viber / Phone */}
                 <div>
                   <label className="block text-gray-200 text-xs font-bold uppercase tracking-wider mb-1.5">
                     WhatsApp / Viber / Phone <span className="text-[var(--color-accent)]">*</span>
                   </label>
-                  <div className="relative">
-                    <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-                    <input
-                      type="tel"
-                      required
-                      disabled={loading}
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      placeholder="+960 765-4321"
-                      className="w-full h-[46px] bg-black border border-white/15 focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] text-white text-sm rounded-xl pl-10 pr-4 outline-none transition-all disabled:opacity-50 placeholder:text-gray-500 shadow-inner"
-                    />
+                  <div className="flex gap-2">
+                    {/* Mandatory Country Code Selector */}
+                    <div className="w-[110px] sm:w-[125px] shrink-0">
+                      <CountryCodeSelect
+                        value={formData.countryCode}
+                        onChange={(dialCode) =>
+                          setFormData((prev) => ({ ...prev, countryCode: dialCode }))
+                        }
+                        required
+                        disabled={loading}
+                      />
+                    </div>
+
+                    {/* Phone Number Input */}
+                    <div className="relative flex-1">
+                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                      <input
+                        type="tel"
+                        required
+                        disabled={loading}
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        placeholder="765-4321"
+                        className="w-full h-[46px] bg-black border border-white/15 focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] text-white text-sm rounded-xl pl-9 pr-3 outline-none transition-all disabled:opacity-50 placeholder:text-gray-500 shadow-inner"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

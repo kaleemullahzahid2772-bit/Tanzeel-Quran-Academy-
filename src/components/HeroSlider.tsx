@@ -169,13 +169,6 @@ export default function HeroSlider() {
                     loading="eager"
                     // @ts-ignore
                     fetchPriority="high"
-                    onError={(e) => {
-                      // Fallback reload if browser dropped GPU texture on tab switch
-                      const target = e.currentTarget;
-                      const currentSrc = target.src;
-                      target.src = "";
-                      target.src = currentSrc;
-                    }}
                   />
                 </picture>
 

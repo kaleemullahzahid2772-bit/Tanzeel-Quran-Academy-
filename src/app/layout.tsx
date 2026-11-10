@@ -1,9 +1,32 @@
 import type { Metadata, Viewport } from "next";
+import { Lato, Cinzel, Amiri } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FloatingContact from "@/components/FloatingContact";
+import ScrollRevealProvider from "@/components/ScrollRevealProvider";
 import { getOrganizationSchema, getWebSiteSchema, SITE_URL } from "@/lib/schema";
+
+const lato = Lato({
+  subsets: ["latin"],
+  weight: ["300", "400", "700", "900"],
+  variable: "--font-lato",
+  display: "swap",
+});
+
+const cinzel = Cinzel({
+  subsets: ["latin"],
+  weight: ["400", "600", "700", "900"],
+  variable: "--font-cinzel",
+  display: "swap",
+});
+
+const amiri = Amiri({
+  subsets: ["arabic", "latin"],
+  weight: ["400", "700"],
+  variable: "--font-amiri",
+  display: "swap",
+});
 
 export const viewport: Viewport = {
   themeColor: "#05080b",
@@ -117,9 +140,11 @@ export default function RootLayout({
   const webSiteSchema = getWebSiteSchema();
 
   return (
-    <html lang="en">
+    <html lang="en" className={`${lato.variable} ${cinzel.variable} ${amiri.variable}`}>
       <head>
         <meta name="google-site-verification" content="google771fd95d29ad6e27" />
+        <link rel="preconnect" href="https://flagcdn.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://flagcdn.com" />
         {/* Schema.org EducationalOrganization & WebSite JSON-LD */}
         <script
           type="application/ld+json"
@@ -134,7 +159,8 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-screen flex flex-col bg-[var(--color-black)] text-white antialiased">
+      <body className="min-h-screen flex flex-col bg-[var(--color-black)] text-white antialiased font-sans">
+        <ScrollRevealProvider />
         <Navbar />
         <main className="flex-1 flex flex-col">{children}</main>
         <Footer />
