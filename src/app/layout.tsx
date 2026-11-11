@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FloatingContact from "@/components/FloatingContact";
 import ScrollRevealProvider from "@/components/ScrollRevealProvider";
+import PageTransition from "@/components/PageTransition";
 import { getOrganizationSchema, getWebSiteSchema, SITE_URL } from "@/lib/schema";
 
 const lato = Lato({
@@ -162,7 +163,9 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col bg-[var(--color-black)] text-white antialiased font-sans">
         <ScrollRevealProvider />
         <Navbar />
-        <main className="flex-1 flex flex-col">{children}</main>
+        <main className="flex-1 flex flex-col">
+          <PageTransition>{children}</PageTransition>
+        </main>
         <Footer />
         <FloatingContact />
       </body>

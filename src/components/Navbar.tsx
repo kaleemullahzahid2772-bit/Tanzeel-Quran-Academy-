@@ -86,19 +86,27 @@ export default function Navbar() {
             {/* Desktop Navigation Links */}
             <div className="hidden md:flex items-center gap-1 lg:gap-2">
               {navLinks.map((link) => {
-                const isActive = pathname === link.href;
+                const isActive =
+                  pathname === link.href ||
+                  (link.href !== "/" && pathname?.startsWith(link.href));
                 return (
                   <Link
                     key={link.name}
                     href={link.href}
                     title={link.name}
-                    className={`px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${
+                    className={`relative px-3.5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-200 outline-none focus:outline-none ${
                       isActive
-                        ? "bg-[var(--color-surface)] text-[var(--color-accent)] border border-[var(--color-accent)]/30"
-                        : "text-gray-300 hover:text-white hover:bg-white/5"
+                        ? "text-white bg-sky-500/10 shadow-[0_0_18px_rgba(56,189,248,0.25),0_0_35px_rgba(255,255,255,0.08)]"
+                        : "text-gray-300 hover:text-white hover:bg-white/[0.06]"
                     }`}
                   >
-                    {link.name}
+                    <span>{link.name}</span>
+                    {isActive && (
+                      <span
+                        className="absolute bottom-0 left-2.5 right-2.5 h-[2px] bg-white rounded-full shadow-[0_0_8px_rgba(255,255,255,0.9),0_0_12px_rgba(56,189,248,0.7)]"
+                        aria-hidden="true"
+                      />
+                    )}
                   </Link>
                 );
               })}
@@ -128,22 +136,30 @@ export default function Navbar() {
         {/* Mobile Drawer Menu */}
         {mobileMenuOpen && (
           <div className="md:hidden bg-[var(--color-black-soft)] border-b border-[var(--color-border)] px-4 pt-3 pb-6 flex flex-col gap-3 animate-fade-in shadow-2xl">
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-1.5">
               {navLinks.map((link) => {
-                const isActive = pathname === link.href;
+                const isActive =
+                  pathname === link.href ||
+                  (link.href !== "/" && pathname?.startsWith(link.href));
                 return (
                   <Link
                     key={link.name}
                     href={link.href}
                     title={link.name}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`px-4 py-2.5 rounded-xl text-sm font-bold uppercase tracking-wider transition-all ${
+                    className={`relative px-4 py-2.5 rounded-xl text-sm font-bold uppercase tracking-wider transition-all duration-200 outline-none focus:outline-none overflow-hidden ${
                       isActive
-                        ? "bg-[var(--color-surface)] text-[var(--color-accent)] border border-[var(--color-accent)]/30"
-                        : "text-gray-300 hover:text-white hover:bg-white/5"
+                        ? "text-white bg-sky-500/15 shadow-[0_0_20px_rgba(56,189,248,0.25),0_0_30px_rgba(255,255,255,0.08)]"
+                        : "text-gray-300 hover:text-white hover:bg-white/[0.06]"
                     }`}
                   >
-                    {link.name}
+                    <span>{link.name}</span>
+                    {isActive && (
+                      <span
+                        className="absolute bottom-0 left-3 right-3 h-[2px] bg-white rounded-full shadow-[0_0_8px_rgba(255,255,255,0.9),0_0_12px_rgba(56,189,248,0.7)]"
+                        aria-hidden="true"
+                      />
+                    )}
                   </Link>
                 );
               })}
