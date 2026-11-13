@@ -147,7 +147,14 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lato:wght@300;400;700;900&display=swap"
+          rel="preload"
+          href="/fonts/Al_Majeed_Quranic.ttf"
+          as="font"
+          type="font/ttf"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Scheherazade+New:wght@400;700&family=Cinzel:wght@400;600;700;900&family=Lato:wght@300;400;700;900&display=swap"
           rel="stylesheet"
         />
         <link rel="preconnect" href="https://flagcdn.com" crossOrigin="anonymous" />
