@@ -233,8 +233,7 @@ export async function POST(req: NextRequest) {
           status: "Pending", // Default pending approval
           is_verified_parent: false, // Never self-verified
         },
-      ])
-      .select();
+      ]);
 
     if (error) {
       console.warn("Supabase insert review warning:", error);
