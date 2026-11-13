@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import HeroSlider from "@/components/HeroSlider";
 import StatsSection from "@/components/StatsSection";
 import WhyChooseUs from "@/components/WhyChooseUs";
+import ParentsReviewsSection from "@/components/ParentsReviewsSection";
 import QuranVerseBanner from "@/components/QuranVerseBanner";
 import { getCourseCatalogSchema, SITE_URL } from "@/lib/schema";
 import { coursesData } from "@/data/courses";
@@ -61,7 +62,10 @@ export default function HomePage() {
       {/* 3. Key Statistics Bar */}
       <StatsSection />
 
-      {/* 4. Quran Calligraphic Verse & CTA Banner */}
+      {/* 4. Parents Reviews & Feedback Section */}
+      <ParentsReviewsSection />
+
+      {/* 5. Quran Calligraphic Verse & CTA Banner */}
       <QuranVerseBanner />
     </div>
   );

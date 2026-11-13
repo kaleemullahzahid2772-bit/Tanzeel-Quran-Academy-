@@ -28,6 +28,8 @@ import {
   Sun,
   Moon,
   MessageCircle,
+  MessageSquareHeart,
+  Star,
   Bell,
   BellRing,
   BellOff,
@@ -40,6 +42,7 @@ import { supabase } from "@/lib/supabase";
 import { TrialRegistration, RegistrationStatus, DashboardStats } from "@/types/admin";
 import RegistrationDetailModal from "@/components/admin/RegistrationDetailModal";
 import RegistrationSlipModal from "@/components/admin/RegistrationSlipModal";
+import AdminReviewsManager from "@/components/admin/AdminReviewsManager";
 import { WhatsAppIcon } from "@/components/FloatingContact";
 
 export default function AdminDashboardPage() {
@@ -64,6 +67,10 @@ export default function AdminDashboardPage() {
   };
 
   const isLight = theme === "light";
+
+  // Dashboard Section Tabs (Registrations vs Reviews)
+  const [adminTab, setAdminTab] = useState<"registrations" | "reviews">("registrations");
+  const [pendingReviewsCount, setPendingReviewsCount] = useState<number>(0);
 
   // Registrations Data
   const [registrations, setRegistrations] = useState<TrialRegistration[]>([]);
@@ -482,6 +489,25 @@ export default function AdminDashboardPage() {
     }
   }, [checkingAuth, fetchRegistrations]);
 
+  // Check pending reviews count on initial load
+  useEffect(() => {
+    if (checkingAuth) return;
+    async function loadPendingReviewsCount() {
+      try {
+        const { count, error } = await supabase
+          .from("reviews")
+          .select("*", { count: "exact", head: true })
+          .eq("status", "Pending");
+        if (!error && typeof count === "number") {
+          setPendingReviewsCount(count);
+        }
+      } catch {
+        // ignore
+      }
+    }
+    loadPendingReviewsCount();
+  }, [checkingAuth]);
+
   // Realtime Supabase listener & Fast Polling fallback
   useEffect(() => {
     if (checkingAuth) return;
@@ -493,6 +519,21 @@ export default function AdminDashboardPage() {
         if (payload) {
           handleIncomingRegistration(payload as TrialRegistration);
         }
+      })
+      .on("broadcast", { event: "new_review" }, ({ payload }) => {
+        setPendingReviewsCount((prev) => prev + 1);
+        if (soundEnabled) {
+          playAlertChime();
+        }
+        if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+          navigator.vibrate([200, 100, 200]);
+        }
+        dispatchSystemNotification("⭐ New Parent Review Received!", {
+          body: `From: ${payload?.parent_name || "Parent"} (${payload?.country || "Online"}) - ${payload?.rating || 5} Stars`,
+          icon: "/admin-icon-192.png",
+          badge: "/admin-icon-192.png",
+          data: { url: "/admin/dashboard" },
+        });
       })
       .subscribe();
 
@@ -1001,7 +1042,72 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
-        {/* Welcome & Overview Header */}
+        {/* Main Section Navigation Switcher (Registrations vs Reviews) */}
+        <div className={`p-1.5 rounded-2xl border flex items-center gap-1.5 self-start ${
+          isLight ? "bg-white border-slate-200 shadow-sm" : "bg-[#0e161e] border-white/10"
+        }`}>
+          <button
+            onClick={() => setAdminTab("registrations")}
+            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition cursor-pointer ${
+              adminTab === "registrations"
+                ? "bg-[var(--color-accent)] text-white shadow-md"
+                : isLight
+                ? "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                : "text-gray-400 hover:text-white hover:bg-white/5"
+            }`}
+          >
+            <Users className="w-4 h-4" />
+            <span>Trial Registrations</span>
+            <span className={`text-[11px] px-2 py-0.5 rounded-full ${
+              adminTab === "registrations"
+                ? "bg-black/25 text-white"
+                : isLight
+                ? "bg-slate-100 text-slate-600"
+                : "bg-white/10 text-gray-400"
+            }`}>
+              {registrations.length}
+            </span>
+          </button>
+
+          <button
+            onClick={() => setAdminTab("reviews")}
+            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition cursor-pointer ${
+              adminTab === "reviews"
+                ? "bg-[var(--color-accent)] text-white shadow-md"
+                : isLight
+                ? "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                : "text-gray-400 hover:text-white hover:bg-white/5"
+            }`}
+          >
+            <MessageSquareHeart className="w-4 h-4" />
+            <span>Parents Reviews</span>
+            {pendingReviewsCount > 0 ? (
+              <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-rose-500 text-white animate-pulse shadow-sm">
+                {pendingReviewsCount} New
+              </span>
+            ) : (
+              <span className={`text-[11px] px-2 py-0.5 rounded-full ${
+                adminTab === "reviews"
+                  ? "bg-black/25 text-white"
+                  : isLight
+                  ? "bg-slate-100 text-slate-600"
+                  : "bg-white/10 text-gray-400"
+              }`}>
+                Reviews
+              </span>
+            )}
+          </button>
+        </div>
+
+        {/* Conditional Rendering between Reviews Tab and Registrations Tab */}
+        {adminTab === "reviews" ? (
+          <AdminReviewsManager
+            theme={theme}
+            onPendingCountChange={setPendingReviewsCount}
+          />
+        ) : (
+          <>
+            {/* Welcome & Overview Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <h1 className={`text-xl sm:text-3xl font-black tracking-tight ${isLight ? "text-slate-900" : "text-white"}`}>
@@ -1610,6 +1716,8 @@ export default function AdminDashboardPage() {
                 );
               })}
             </div>
+          </>
+        )}
           </>
         )}
       </main>
