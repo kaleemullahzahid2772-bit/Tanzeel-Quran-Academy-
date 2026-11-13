@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Lato, Cinzel, Amiri } from "next/font/google";
+import { Open_Sans, Cinzel, Amiri } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -8,10 +8,10 @@ import ScrollRevealProvider from "@/components/ScrollRevealProvider";
 import PageTransition from "@/components/PageTransition";
 import { getOrganizationSchema, getWebSiteSchema, SITE_URL } from "@/lib/schema";
 
-const lato = Lato({
+const openSans = Open_Sans({
   subsets: ["latin"],
-  weight: ["300", "400", "700", "900"],
-  variable: "--font-lato",
+  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-open-sans",
   display: "swap",
 });
 
@@ -141,7 +141,7 @@ export default function RootLayout({
   const webSiteSchema = getWebSiteSchema();
 
   return (
-    <html lang="en" className={`${lato.variable} ${cinzel.variable} ${amiri.variable}`}>
+    <html lang="en" className={`${openSans.variable} ${cinzel.variable} ${amiri.variable}`}>
       <head>
         <meta name="google-site-verification" content="google771fd95d29ad6e27" />
         <link rel="preconnect" href="https://flagcdn.com" crossOrigin="anonymous" />

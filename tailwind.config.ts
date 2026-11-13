@@ -36,7 +36,7 @@ const config: Config = {
         grayMuted: "var(--color-gray-muted)",
       },
       fontFamily: {
-        sans: ["var(--font-lato)", "sans-serif"],
+        sans: ["var(--font-open-sans)", "var(--font-lato)", "'Open Sans'", "sans-serif"],
         cinzel: ["var(--font-cinzel)", "serif"],
         arabic: ["var(--font-amiri)", "serif"],
       },

@@ -45,6 +45,16 @@ export default function ParentsReviewsSection() {
 
   useEffect(() => {
     fetchReviews();
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (
+        params.get("review") === "true" ||
+        params.get("write-review") === "1" ||
+        params.get("feedback") === "1"
+      ) {
+        setIsModalOpen(true);
+      }
+    }
   }, []);
 
   // Helper to find flag for country
