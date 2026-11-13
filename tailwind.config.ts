@@ -36,9 +36,10 @@ const config: Config = {
         grayMuted: "var(--color-gray-muted)",
       },
       fontFamily: {
-        sans: ["var(--font-lato)", "'Lato'", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
-        cinzel: ["var(--font-cinzel)", "serif"],
-        arabic: ["var(--font-amiri)", "serif"],
+        sans: ["'Lato'", "var(--font-lato)", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+        body: ["'Lato'", "var(--font-lato)", "sans-serif"],
+        cinzel: ["'Cinzel'", "var(--font-cinzel)", "serif"],
+        arabic: ["var(--font-amiri)", "'Amiri'", "serif"],
       },
       animation: {
         "fade-in": "fadeIn 0.6s ease-out forwards",

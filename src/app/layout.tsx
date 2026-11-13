@@ -144,6 +144,12 @@ export default function RootLayout({
     <html lang="en" className={`${lato.variable} ${cinzel.variable} ${amiri.variable}`}>
       <head>
         <meta name="google-site-verification" content="google771fd95d29ad6e27" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lato:wght@300;400;700;900&display=swap"
+          rel="stylesheet"
+        />
         <link rel="preconnect" href="https://flagcdn.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://flagcdn.com" />
         {/* Schema.org EducationalOrganization & WebSite JSON-LD */}
