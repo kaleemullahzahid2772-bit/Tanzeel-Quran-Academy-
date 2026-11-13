@@ -20,65 +20,6 @@ function cleanupRateLimits() {
   });
 }
 
-// Fallback verified authentic approved reviews in case DB table is being created
-const fallbackApprovedReviews: PublicReview[] = [
-  {
-    id: "seed-1",
-    parent_name: "Sister Aisha Malik",
-    country: "United Kingdom",
-    rating: 5,
-    feedback:
-      "Al Tanzeel Quran Academy has been a tremendous blessing for our family. Both my daughters (ages 7 and 10) started with Noorani Qaida and their Tajweed has improved remarkably. The female teacher is extraordinarily gentle, punctual, and encouraging.",
-    is_verified_parent: true,
-    course_name: "Quranic Qaidah & Tajweed",
-    created_at: new Date(Date.now() - 2 * 86400000).toISOString(),
-  },
-  {
-    id: "seed-2",
-    parent_name: "Brother Tariq Mahmood",
-    country: "Canada",
-    rating: 5,
-    feedback:
-      "My 9-year-old son completed 5 Juz in just 8 months! Qari Ibrahim’s patience and daily revision method made memorization enjoyable rather than overwhelming. The flexible weekend slots suit our busy Canadian schedule perfectly.",
-    is_verified_parent: true,
-    course_name: "Quran Memorizing (Hifz)",
-    created_at: new Date(Date.now() - 5 * 86400000).toISOString(),
-  },
-  {
-    id: "seed-3",
-    parent_name: "Dr. Sarah Khan",
-    country: "United States",
-    rating: 5,
-    feedback:
-      "Finding a reliable, trustworthy online Quran tutor in the US was challenging until we found Al Tanzeel. The 1-on-1 personalized attention and monthly progress reports keep us completely confident in our son’s Quranic development.",
-    is_verified_parent: true,
-    course_name: "Quran Reading with Tajweed",
-    created_at: new Date(Date.now() - 8 * 86400000).toISOString(),
-  },
-  {
-    id: "seed-4",
-    parent_name: "Brother Omar Farooq",
-    country: "Australia",
-    rating: 5,
-    feedback:
-      "The time-zone flexibility is unmatched. Despite being in Sydney with a major time difference, the academy accommodated our exact morning before-school preference. Highly recommended to all Muslim parents abroad!",
-    is_verified_parent: true,
-    course_name: "Noorani Qaida for Kids",
-    created_at: new Date(Date.now() - 12 * 86400000).toISOString(),
-  },
-  {
-    id: "seed-5",
-    parent_name: "Sister Amina Yusuf",
-    country: "United Kingdom",
-    rating: 5,
-    feedback:
-      "As a revert to Islam, I was anxious about learning Arabic and Tajweed from scratch. Tanzeel Quran Academy made me feel welcomed and supported from day one. I am now reciting full Surahs with correct Makharij!",
-    is_verified_parent: true,
-    course_name: "Women Quranic Course",
-    created_at: new Date(Date.now() - 15 * 86400000).toISOString(),
-  },
-];
-
 // GET: Return public approved reviews (Strictly excluding email and private fields)
 export async function GET() {
   try {
@@ -88,12 +29,11 @@ export async function GET() {
       .eq("status", "Approved")
       .order("created_at", { ascending: false });
 
-    if (error || !data || data.length === 0) {
-      // If table is not created yet or empty, return default authentic approved reviews
+    if (error || !data) {
       return NextResponse.json({
         success: true,
-        reviews: fallbackApprovedReviews,
-        source: error ? "fallback" : "database",
+        reviews: [],
+        source: "database",
       });
     }
 
@@ -106,8 +46,8 @@ export async function GET() {
     console.error("GET /api/reviews error:", err);
     return NextResponse.json({
       success: true,
-      reviews: fallbackApprovedReviews,
-      source: "fallback",
+      reviews: [],
+      source: "error",
     });
   }
 }
@@ -252,7 +192,7 @@ export async function POST(req: NextRequest) {
         type: "broadcast",
         event: "new_review",
         payload: {
-          id: data?.[0]?.id || Date.now(),
+          id: Date.now(),
           parent_name: cleanName,
           country: cleanCountry,
           rating: numericRating,
