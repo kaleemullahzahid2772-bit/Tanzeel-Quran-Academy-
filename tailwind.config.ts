@@ -39,7 +39,16 @@ const config: Config = {
         sans: ["'Lato'", "var(--font-lato)", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
         body: ["'Lato'", "var(--font-lato)", "sans-serif"],
         cinzel: ["'Cinzel'", "var(--font-cinzel)", "serif"],
-        arabic: ["'AlMajeedQuranic'", "'Amiri Quran'", "'Scheherazade New'", "var(--font-amiri)", "'Amiri'", "serif"],
+        arabic: [
+          "'KFGQPC Uthmanic Script HAFS'",
+          "'KFGQPC Uthman Taha Naskh'",
+          "'AlMajeedQuranic'",
+          "'Amiri Quran'",
+          "'Scheherazade New'",
+          "var(--font-amiri)",
+          "'Amiri'",
+          "serif",
+        ],
       },
       animation: {
         "fade-in": "fadeIn 0.6s ease-out forwards",

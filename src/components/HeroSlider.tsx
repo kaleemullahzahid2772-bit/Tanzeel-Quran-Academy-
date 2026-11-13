@@ -186,6 +186,8 @@ export default function HeroSlider() {
           <div
             className="arabic text-3xl sm:text-5xl md:text-6xl text-white mb-6 animate-fade-in drop-shadow-[0_4px_30px_rgba(0,0,0,0.9)]"
             aria-label="Bismillah ir-Rahman ir-Rahim"
+            dir="rtl"
+            lang="ar"
           >
             بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ
           </div>

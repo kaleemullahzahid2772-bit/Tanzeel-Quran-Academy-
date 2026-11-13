@@ -148,9 +148,16 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
           rel="preload"
-          href="/fonts/Al_Majeed_Quranic.ttf"
+          href="/fonts/UthmanicHafs1_Ver09.woff2"
           as="font"
-          type="font/ttf"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/UthmanTN1_Ver10.woff2"
+          as="font"
+          type="font/woff2"
           crossOrigin="anonymous"
         />
         <link
